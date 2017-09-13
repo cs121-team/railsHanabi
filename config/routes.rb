@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  get 'lobby/home'
+  root 'games#new'
   get 'games/new'
-  root 'lobby#home'
+  get 'games/play'
   devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   
