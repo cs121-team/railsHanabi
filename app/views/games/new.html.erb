@@ -1,4 +1,9 @@
 <h1>Set up your game!</h1>
 <p>Find people to play with...</p>
 
+<!-- But we only want logged in users...? -->
+<% @users = User.all %>
+<% @users.each do |user| %>
+  <%= user.email %><br/>
+<% end %>
 
