@@ -2,12 +2,11 @@ class GamesController < ApplicationController
   before_action :authenticate_user!
 
   def new
-    @game = Game.new
+  	# select users and redirect to play
   end
 
-  def create
+  def play
     @game = Game.new
-    puts "success"
-    # redirect_to @game
+    # play the game...
   end
 end
