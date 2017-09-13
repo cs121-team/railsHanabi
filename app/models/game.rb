@@ -1,5 +1,4 @@
 class Game < ApplicationRecord
-  attr_accessor :remaining_deck, :center_deck
   def initialize()
     @center_deck = []
     @remaining_deck = []
@@ -15,7 +14,6 @@ end
 
 
 class Card
-  attr_accessor :value, :suite
   def initialize(value, suite)
     @value = value
     @suite = suite
