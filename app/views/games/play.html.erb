@@ -1,4 +1,9 @@
 <h1>Play a game!</h1>
-<p>This should show hands and stuff</p>
-
-
+<h3> <%= @game.remaining_deck.size %> Cards in deck</h3>
+<h3> <%= @game.center_deck.size %> Cards in center deck</h3>
+<% @game.players.each do |player| %>
+  <div>
+    <h1><%= player.user_name %></h1>
+    <h1><%= player.cards %></h1>
+  </div>
+<% end %>
