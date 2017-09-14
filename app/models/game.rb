@@ -1,6 +1,6 @@
 class Game < ApplicationRecord
   attr_accessor :center_deck, :remaining_deck, :players
-  def initialize(user_names=%w[ Gavin Jasmine Nupur Oliva ])
+  def initialize(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     @user_names = user_names
     @center_deck = []
     @remaining_deck = []
