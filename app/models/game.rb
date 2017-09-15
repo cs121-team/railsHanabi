@@ -30,7 +30,7 @@ class Game < ApplicationRecord
       end
     end
   end
-  
+
 end
 
 
@@ -47,9 +47,10 @@ class Card
 end
 
 class Hand
-  attr_accessor :cards
+  attr_accessor :cards, :hints
   def initialize(cards)
     @cards = cards
+    @hints = []
   end
 
   def addCard(card)
