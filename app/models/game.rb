@@ -13,7 +13,8 @@ class Game < ApplicationRecord
       end
     end
     @user_names.each do |user_name|
-      @players << Player.new(user_name)
+      hand = Hand.new([])
+      @players << Player.new(user_name, hand)
     end
     distributeCards()
   end
@@ -23,13 +24,13 @@ class Game < ApplicationRecord
       x = 0
       while x < 5
         index = rand(@remaining_deck.length)
-        player.addCard(@remaining_deck[index])
+        player.hand.addCard(@remaining_deck[index])
         remaining_deck.delete_at(index)
         x += 1
       end
-
     end
   end
+  
 end
 
 
@@ -45,11 +46,10 @@ class Card
   end
 end
 
-class Player
-  attr_accessor :user_name, :cards
-  def initialize(user_name)
-    @user_name = user_name
-    @cards = []
+class Hand
+  attr_accessor :cards
+  def initialize(cards)
+    @cards = cards
   end
 
   def addCard(card)
@@ -61,7 +61,19 @@ class Player
     for card in @cards
       cards_string << "\t #{card} \n"
     end
+    cards_string
+  end
+end
+
+class Player
+  attr_accessor :user_name, :hand
+  def initialize(user_name, hand)
+    @user_name = user_name
+    @hand = hand
+  end
+
+  def to_s
     "Username: #{@user_name} \n" +
-    "Cards: \n" + cards_string
+    "Cards: \n #{@hand}"
   end
 end
