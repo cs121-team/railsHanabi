@@ -34,9 +34,10 @@ class Game < ApplicationRecord
     end
   end
 
+  # TODO: should this go in this class or in the controller?
   def play()
     while (!over)
-      #play the game
+      #play
     end
   end
 
@@ -51,22 +52,41 @@ end
 
 
 class Card
-  attr_accessor :rank, :suite
+  attr_accessor :rank, :suite, :knowsRank, :knowsSuite
   def initialize(rank, suite)
     @rank = rank
     @suite = suite
+    @knowsRank = false
+    @knowsSuite = false
+  end
+
+  def knowsRank()
+    @knowsRank = true
+  end
+
+  def knowsSuite()
+    @knowsSuite = true
   end
 
   def to_s
-    "#{@rank}#{@suite}"
+    card_string = "#{@rank}#{@suite}"
+
+    if @knowsRank
+      card_string << "#{@rank}"
+    end
+
+    if @knowsSuite
+      card_string << "#{@suite}"
+    end
+
+    card_string #returned
   end
 end
 
 class Hand
-  attr_accessor :cards, :hints
+  attr_accessor :cards
   def initialize(cards)
     @cards = cards
-    @hints = []
   end
 
   def addCard(card)
