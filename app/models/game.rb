@@ -5,6 +5,9 @@ class Game < ApplicationRecord
     @center_deck = []
     @remaining_deck = []
     @players = []
+    @hint_counter = 8
+    @bomb_counter = 3
+
     suites = %w[ A B C D E ]
     ranks = %i[ 1 1 1 2 2 3 3 4 4 5 ]
     suites.each do |suite|
@@ -29,6 +32,19 @@ class Game < ApplicationRecord
         x += 1
       end
     end
+  end
+
+  def play()
+    while (!over)
+      #play the game
+    end
+  end
+
+  def gameOver()
+    over = false
+    bomb_counter == 0
+      over = true
+    over #returned
   end
 
 end
