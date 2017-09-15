@@ -1,5 +1,16 @@
 class Game < ApplicationRecord
   attr_accessor :center_deck, :remaining_deck, :players
+  def self.start(player1, player2, player3, player4)
+    # Randomly choses who gets to be noughts or crosses
+    p1, p2, p3, p4 = [player1, player2, player3, player4].shuffle
+
+    # Broadcast back to the players subscribed to the channel that the game has started
+    ActionCable.server.broadcast "player_#{p1}", {action: "game_start", msg: "Player 1"}
+    ActionCable.server.broadcast "player_#{p2}", {action: "game_start", msg: "Player 2"}
+    ActionCable.server.broadcast "player_#{p3}", {action: "game_start", msg: "Player 3"}
+    ActionCable.server.broadcast "player_#{p4}", {action: "game_start", msg: "Player 4"}
+  end
+
   def initialize(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     @user_names = user_names
     @center_deck = []
