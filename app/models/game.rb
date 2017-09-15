@@ -13,11 +13,22 @@ class Game < ApplicationRecord
       end
     end
     @user_names.each do |user_name|
-      @players<< Player.new(user_name)
+      @players << Player.new(user_name)
     end
+    distributeCards()
   end
 
   def distributeCards()
+    players.each do |player|
+      x = 0
+      while x < 5
+        index = rand(@remaining_deck.length)
+        player.addCard(@remaining_deck[index])
+        remaining_deck.delete_at(index)
+        x += 1
+      end
+
+    end
   end
 end
 
@@ -28,6 +39,10 @@ class Card
     @rank = rank
     @suite = suite
   end
+
+  def to_s
+    "#{@rank}#{@suite}"
+  end
 end
 
 class Player
@@ -35,5 +50,18 @@ class Player
   def initialize(user_name)
     @user_name = user_name
     @cards = []
+  end
+
+  def addCard(card)
+    @cards << card
+  end
+
+  def to_s
+    cards_string = ""
+    for card in @cards
+      cards_string << "\t #{card} \n"
+    end
+    "Username: #{@user_name} \n" +
+    "Cards: \n" + cards_string
   end
 end

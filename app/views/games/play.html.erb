@@ -3,7 +3,6 @@
 <h3> <%= @game.center_deck.size %> Cards in center deck</h3>
 <% @game.players.each do |player| %>
   <div>
-    <h1><%= player.user_name %></h1>
-    <h1><%= player.cards %></h1>
+  	<h1><%= player %></h1>
   </div>
 <% end %>
