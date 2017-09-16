@@ -1,5 +1,6 @@
 class Game < ApplicationRecord
-  attr_accessor :center_deck, :remaining_deck, :players
+  attr_accessor :center_deck, :remaining_deck, :players,
+                :hint_counter, :bomb_counter
   def initialize(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     @user_names = user_names
     @center_deck = []
@@ -34,11 +35,77 @@ class Game < ApplicationRecord
     end
   end
 
-  # TODO: should this go in this class or in the controller?
   def play()
+    over = gameOver()
     while (!over)
-      #play
+      # play the game
+      # TODO: give users options: play a card, discard a card, or give a hint
+
+      # TODO: if the user wants to play a card, ask them to select the card
+      # then, call playCard()
+
+      # TODO: if the user wants to discard, call discardCard()
+
+      # TODO: if the user wants to give a hint, call giveHint()
+
+      # Move to next person's turn
+      over = gameOver()
     end
+  end
+
+  def playCard()
+    # ask the user to select a card, save this as card
+
+    if (playable(card))
+      addToCenterStack(card)
+    else
+      bomb_counter -= 1
+    end
+  end
+
+  def playable(card)
+    # TODO: true if the card can be played based on other cards in the center pile
+    center_deck.any?{|center_card| center_card.suite == card.suite &&
+      center_card.rank == (card.rank - 1)}
+  end
+
+  def addToCenterStack(card)
+    center_deck << card;
+  end
+
+  def giveHint()
+    suiteHint = false
+    rankHint = false
+    # provide options that person could choose from
+    #   list of players, and either rank or suite that they could pick from
+    #   store the type of hint (either suite or rank) by setting it true
+
+    # for the chosen hint, identify list of all cards that are affected
+    hintCards = []
+
+    # set the hint to true for the specified card
+    if suiteHint
+      hintCards.each do |card|
+        card.knowsSuite = true
+      end
+    end
+
+    if rankHint
+      hintCards.each do |card|
+        card.knowsRank = true
+      end
+    end
+  end
+
+  def discardCard()
+    # let the user choose a card to discard
+
+    # remove the card from their hand
+    
+    # draw a new card for them
+
+    # increase the hint counter
+    hint_counter += 1
   end
 
   def gameOver()
@@ -91,6 +158,10 @@ class Hand
 
   def addCard(card)
     @cards << card
+  end
+
+  def removeCard(card)
+    @cards.delete_if {|c| c == card}
   end
 
   def to_s
