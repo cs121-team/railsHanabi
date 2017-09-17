@@ -24,12 +24,12 @@ class Game < ApplicationRecord
   end
 
   def distributeCards()
-    players.each do |player|
+    @players.each do |player|
       x = 0
       while x < 5
         index = rand(@remaining_deck.length)
         player.hand.addCard(@remaining_deck[index])
-        remaining_deck.delete_at(index)
+        @remaining_deck.delete_at(index)
         x += 1
       end
     end
@@ -80,7 +80,7 @@ class Game < ApplicationRecord
     #   list of players, and either rank or suite that they could pick from
     #   store the type of hint (either suite or rank) by setting it true
 
-    # for the chosen hint, identify list of all cards that are affected
+    # TODO: for the chosen hint, identify list of all cards that are affected
     hintCards = []
 
     # set the hint to true for the specified card
@@ -101,7 +101,7 @@ class Game < ApplicationRecord
     # let the user choose a card to discard
 
     # remove the card from their hand
-    
+
     # draw a new card for them
 
     # increase the hint counter
