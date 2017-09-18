@@ -1,6 +1,6 @@
 class Game < ApplicationRecord
   attr_accessor :center_deck, :remaining_deck, :players,
-                :hint_counter, :bomb_counter
+                :hint_counter, :bomb_counter, :turn_counter
   def initialize(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     @user_names = user_names
     @center_deck = []
@@ -8,6 +8,7 @@ class Game < ApplicationRecord
     @players = []
     @hint_counter = 8
     @bomb_counter = 3
+    @turn_counter = 0 # Will be 0, 1, 2, or 3
 
     suites = %w[ A B C D E ]
     ranks = %i[ 1 1 1 2 2 3 3 4 4 5 ]
@@ -49,6 +50,7 @@ class Game < ApplicationRecord
       # TODO: if the user wants to give a hint, call giveHint()
 
       # Move to next person's turn
+      @turn_counter = @turn_counter + 1
       over = gameOver()
     end
   end
