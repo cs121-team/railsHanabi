@@ -4,8 +4,9 @@
 <h3> <%= @game.hint_counter %> Hints remaining</h3>
 <h3> <%= @game.bomb_counter %> Bombs remaining</h3>
 <h3> <%= @game.turn_counter %> Whose Turn?</h3>
+<button> <%= @game.play() %> Play</button>
 <% @game.players.each do |player| %>
   <div>
-  	<h1><%= player %></h1>
+    <h1><%= player %></h1>
   </div>
 <% end %>
