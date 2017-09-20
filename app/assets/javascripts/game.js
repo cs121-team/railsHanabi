@@ -1,6 +1,6 @@
 var Game = function(element, playerId) {
   console.log("GAME CREATED", playerId)
-  this.element = $(element);
+  this.element = $(element); // This element is game-container. We can put stuff there!
 
   this.start = function() {
     // TODO: If we decide to go the primarily JS/ActionScript route,

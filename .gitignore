@@ -5,7 +5,8 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore redis dump file
-/dump.rbd
+/dump.rdb
+/.dump.rbd.swp
 
 # Ignore bundler config.
 /.bundle
