@@ -10,7 +10,7 @@ App.game = App.cable.subscriptions.create "GameChannel",
     switch data.action
       when "game_start"
         console.log("LET'S PLAY A GAME!!!")
-        $('#status').html("data.msg")
+        $('#status').html("Your player ID: " + data.msg)
         App.gamePlay = new Game('game-container', data.msg)
         console.log(data.msg)
 
