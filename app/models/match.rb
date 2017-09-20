@@ -1,3 +1,4 @@
+require "redis"
 class Match < ApplicationRecord
   def self.create(uuid)
     if REDIS.get("matches").blank?
