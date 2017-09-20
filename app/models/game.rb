@@ -5,19 +5,20 @@ class Game < ApplicationRecord
   attr_accessor :center_deck, :remaining_deck, :players,
                 :hint_counter, :bomb_counter
   def self.start(player1, player2)
-  # Randomly choses who gets to be noughts or crosses
-  cross, nought = [player1, player2].shuffle
+    # Randomly choses who gets to be noughts or crosses
+    cross, nought = [player1, player2].shuffle
 
-  # Broadcast back to the players subscribed to the channel that the game has started
-  ActionCable.server.broadcast "player_#{cross}", {action: "game_start", msg: "Cross"}
-  ActionCable.server.broadcast "player_#{nought}", {action: "game_start", msg: "Nought"}
+    # Broadcast back to the players subscribed to the channel that the game has started
+    ActionCable.server.broadcast "player_#{cross}", {action: "game_start", msg: "Cross"}
+    ActionCable.server.broadcast "player_#{nought}", {action: "game_start", msg: "Nought"}
 
-  # Store the details of each opponent
-  REDIS.set("opponent_for:#{cross}", nought)
-  REDIS.set("opponent_for:#{nought}", cross)
+    # Store the details of each opponent
+    REDIS.set("opponent_for:#{cross}", nought)
+    REDIS.set("opponent_for:#{nought}", cross)
 end
 
   def initialize(user_names=%w[ Gavin Jasmine Nupur Olivia ])
+    puts "INITIALIZING GAME!"
     @user_names = user_names
     @center_deck = []
     @remaining_deck = []

@@ -8,6 +8,7 @@ class Match < ApplicationRecord
       opponent = REDIS.get("matches")
 
       Game.start(uuid, opponent)
+
       # Clear the waiting key as no one new is waiting
       REDIS.set("matches", nil)
     end

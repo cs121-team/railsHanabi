@@ -5,12 +5,14 @@ App.game = App.cable.subscriptions.create "GameChannel",
     console.log("WAITING!!!!!!!!!!!!!!")
 
   received: (data) ->
+    console.log("GOT DATA!!!")
     # Called when there's incoming data on the websocket for this channel
     switch data.action
       when "game_start"
         console.log("LET'S PLAY A GAME!!!")
-        $('#status').html("Player found")
-        App.gamePlay = new Game('#game-container', data.msg)
+        $('#status').html("data.msg")
+        App.gamePlay = new Game('game-container', data.msg)
+        console.log(data.msg)
 
       when "take_turn"
         App.gamePlay.move data.move
@@ -26,6 +28,3 @@ App.game = App.cable.subscriptions.create "GameChannel",
 
   disconnected: ->
     # Called when the subscription has been terminated by the server
-
-  received: (data) ->
-    # Called when there's incoming data on the websocket for this channel
