@@ -6,15 +6,15 @@ class Game < ApplicationRecord
                 :hint_counter, :bomb_counter
   def self.start(player1, player2)
     # Randomly choses who gets to be noughts or crosses
-    cross, nought = [player1, player2].shuffle
+    player0, player1 = [player1, player2].shuffle #TODO: Later modify to work with variable # players
 
     # Broadcast back to the players subscribed to the channel that the game has started
-    ActionCable.server.broadcast "player_#{cross}", {action: "game_start", msg: "Cross"}
-    ActionCable.server.broadcast "player_#{nought}", {action: "game_start", msg: "Nought"}
+    ActionCable.server.broadcast "player_#{player0}", {action: "game_start", msg: 0}
+    ActionCable.server.broadcast "player_#{player1}", {action: "game_start", msg: 1}
 
     # Store the details of each opponent
-    REDIS.set("opponent_for:#{cross}", nought)
-    REDIS.set("opponent_for:#{nought}", cross)
+    REDIS.set("opponent_for:#{player0}", player1)
+    REDIS.set("opponent_for:#{player1}", player0)
 end
 
   def initialize(user_names=%w[ Gavin Jasmine Nupur Olivia ])
