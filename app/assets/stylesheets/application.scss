@@ -17,3 +17,15 @@
 // "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
 @import "bootstrap-sprockets";
 @import "bootstrap";
+#card {
+  margin:80px auto;
+  background: rgba(255,255,255, 0.5);
+  background:transparent;
+  font-size: 300;
+}
+#status {
+  color:#111;
+  font-size:21px;
+  -webkit-transition: opacity 0.3s linear;
+  transition: opacity 0.3s linear;
+}

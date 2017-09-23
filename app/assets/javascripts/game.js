@@ -12,11 +12,17 @@ var Game = function(element, playerId) {
     // similar to the game.js file in the tic-tac-toe tutorial.
     console.log("We started!");
     console.log("player", playerId);
+
+
     if (playerId == 1) {
+      $('#card').html('1a');
       console.log(this.center_deck[0]);
     } else {
+      $('#card').html('1b');
       console.log(this.center_deck[1]);
     }
+    console.log("test jquery")
+    $('#status').html('Your turn');
   }
 
 
