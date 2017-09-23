@@ -1,7 +1,24 @@
+# require('SecureRandom')
+# a = SecureRandom.uuid
+
 class Game < ApplicationRecord
   attr_accessor :center_deck, :remaining_deck, :players,
                 :hint_counter, :bomb_counter
+  def self.start(player1, player2)
+    # Randomly choses who gets to be noughts or crosses
+    player0, player1 = [player1, player2].shuffle #TODO: Later modify to work with variable # players
+
+    # Broadcast back to the players subscribed to the channel that the game has started
+    ActionCable.server.broadcast "player_#{player0}", {action: "game_start", msg: 0}
+    ActionCable.server.broadcast "player_#{player1}", {action: "game_start", msg: 1}
+
+    # Store the details of each opponent
+    REDIS.set("opponent_for:#{player0}", player1)
+    REDIS.set("opponent_for:#{player1}", player0)
+end
+
   def initialize(user_names=%w[ Gavin Jasmine Nupur Olivia ])
+    puts "INITIALIZING GAME!"
     @user_names = user_names
     @center_deck = []
     @remaining_deck = []
