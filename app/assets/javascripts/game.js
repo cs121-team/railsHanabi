@@ -4,19 +4,19 @@ var Game = function(element, playerId) {
   this.init = function() {
     this.center_deck = [];
     this.remaining_deck = [];
-    this.players = [];
-    this.ranks = [1,1,1,2,2,3,3,4,4,5];
+    this.players = [[],[],[],[]];
+    this.ranks = ['1','1','1','2','2','3','3','4','4','5'];
     this.suites = ['A','B','C','D','E'];
 
     //Create the initial deck
     for (i = 0; i < this.ranks.length; i++) {
       for (j = 0; j < this.suites.length; j++){
-        this.remaining_deck.push([this.ranks[i],this.ranks[j]]);
+        this.remaining_deck.push([this.ranks[i],this.suites[j]]);
       }
     }
+    this.distributeCards();
     //
     // //Create the hands of players
-    // this.distributeCards();
   };
   this.start = function() {
     this.init()
@@ -26,23 +26,41 @@ var Game = function(element, playerId) {
     console.log("We started!");
     console.log("player", playerId);
     console.log(this.remaining_deck.length);
+    console.log(this.players.length);
+    var displayCards = this.players;
+    displayCards.splice(playerId,1);
 
-    $('#card').html(this.suites[playerId]);
-    console.log("test jquery")
+    //player can only see other players' cards
+    $('#card1').html(displayCards);
+    console.log(this.players[playerId]);
     $('#status').html('Your turn');
+    //this.displayCards();
+
   }
 
-  // this.distributeCards = function() {
+  this.distributeCards = function() {
+    for (i = 0; i < this.players.length; i++) {
+      var x = 0;
+      while (x < 5) {
+        console.log(x);
+        var index = Math.floor(Math.random() * this.remaining_deck.length);
+        this.players[i].push(this.remaining_deck[index]);
+        this.remaining_deck.splice(index,1);
+        x += 1;
+      }
+    };
+  };
+
+  // this.displayCards = function() {
+  //   $("now").html("happy");
+  //   var newHTML = [];
   //   for (i = 0; i < this.players.length; i++) {
-  //     var x = 0;
-  //     while (x < 5) {
-  //       var index = Math.floor(Math.random() * this.remaining_deck.length);
-  //       this.players[i].push(this.remaining_deck[index]);
-  //       this.remaining_deck.splice(index,1);
-  //       x += 1;
-  //     }
-  //   };
-  // };
+  //     newHTML.push('<span>' + '2' + '</span>');
+  //     $("players").html(i);
+  //     console.log("????");
+  //   }
+
+
 
 
   this.start();
