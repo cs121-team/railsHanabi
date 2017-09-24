@@ -1,5 +1,4 @@
 var Game = function(element, playerId) {
-  console.log("GAME CREATED", playerId)
   this.element = $(element); // This element is game-container. We can put stuff there!
   this.init = function() {
     this.turn = 0
@@ -30,7 +29,6 @@ var Game = function(element, playerId) {
 
     //player can only see other players' cards
     //$('#card1').html(displayCards);
-    //console.log(this.players[playerId]);
     if (playerId == 0) {
       $('#status').html('Your turn');
     } else {
@@ -43,7 +41,7 @@ var Game = function(element, playerId) {
     $('#take-turn').click(function(e){
       e.preventDefault();
       $('#your-turn').hide();
-      App.game.takeTurn(playerId, "play", ["5", "A"]); //TODO: Don't hard-code this.
+      App.game.takeTurn(playerId, "play", ["1", "A"]); //TODO: Don't hard-code this.
     });
 
     $("#play-options input:radio").click(function(e) {
@@ -87,14 +85,17 @@ var Game = function(element, playerId) {
   }
 
   this.turnFinished = function() {
-    console.log("turn before ", this.turn)
     // Later, do more with this turn
-    console.log()
     this.turn = (this.turn + 1) % 2 //TODO(olivia): Later come back and don't hard code # players
-    console.log("TURN: ", this.turn)
     if (this.turn == playerId) {
       $('#your-turn').show();
     }
+  }
+
+  this.updatedState = function(data) {
+    console.log("WE GOT DATA!!!!!!!!!");
+    console.log(data);
+    this.turnFinished()
   }
 
 
