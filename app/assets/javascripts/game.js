@@ -41,31 +41,46 @@ var Game = function(element, playerId) {
     $('#take-turn').click(function(e){
       e.preventDefault();
       $('#your-turn').hide()
-      App.game.takeTurn(playerId, this.turnType, this.cardOption); //TODO: Don't hard-code this.
+      if (this.turnType == "hint") {
+		App.game.takeTurn(playerId, this.turnType, [this.hintToPlayer, this.hint]);
+      } else {
+      	App.game.takeTurn(playerId, this.turnType, this.card);
+      }
     });
 
     $("#play-options input:radio").click(function(e) {
       this.turnType = e.target.value;
+      $('#hint-list').hide();
       switch(e.target.value) {
         case "play":
           $('#my-cards').show();
-          $('#hints').hide();
+          $('#hint-players').hide();
           break;
         case "hint":
-          $('#hints').show();
+          $('#hint-players').show();
           $('#my-cards').hide();
           break;
         case "discard":
           $('#my-cards').show();
-          $('#hints').hide();
+          $('#hint-players').hide();
           break;
         default:
           break;
       }
     });
 
-    $("#card-options input:radio").click(function(e) {
-      this.cardOption = e.target.value;
+    $("#my-cards input:radio").click(function(e) {
+      this.card = e.target.value;
+    });
+
+    $("#hint-players input:radio").click(function(e) {
+      this.hintToPlayer = e.target.value;
+      console.log('trying to show hints?');
+      $('#hint-list').show();
+    });
+
+    $("#hint-list input:radio").click(function(e) {
+      this.hint = e.target.value;
     });
 
   }

@@ -10,7 +10,7 @@
     <input type="radio" name="turn-type" value="discard">Discard a Card<br>
   </div>
 
-  <div id="hints" style="display: none;">
+  <div id="hint-players" style="display: none;">
     <input type="radio" name="hint-reciever" value=0>Player 0<br> <!-- TODO(olivia): Only show players who are playing, and not yourself -->
     <input type="radio" name="hint-reciever" value=1>Player 1<br>
     <input type="radio" name="hint-reciever" value=2>Player 2<br>
@@ -24,7 +24,20 @@
     <input type="radio" name="card-selector" value=2>Card 2<br>
     <input type="radio" name="card-selector" value=3>Card 3<br>
     <input type="radio" name="card-selector" value=4>Card 4<br>
-  </form>
+  </div>
+
+  <div id="hint-list" style="display: none;">
+    <input type="radio" name="hint-selector" value=1>1<br>
+    <input type="radio" name="hint-selector" value=2>2<br>
+    <input type="radio" name="hint-selector" value=3>3<br>
+    <input type="radio" name="hint-selector" value=4>4<br>
+    <input type="radio" name="hint-selector" value=5>5<br>
+    <input type="radio" name="hint-selector" value=6>A<br>
+    <input type="radio" name="hint-selector" value=7>B<br>
+    <input type="radio" name="hint-selector" value=8>C<br>
+    <input type="radio" name="hint-selector" value=9>D<br>
+    <input type="radio" name="hint-selector" value=10>E<br>
+  </div>
 
   <button id="take-turn">Complete Turn</button> <!-- TODO(olivia): Make this ony show up when you've chosen a valid word. -->
 
