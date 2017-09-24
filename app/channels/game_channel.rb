@@ -4,6 +4,14 @@ class GameChannel < ApplicationCable::Channel
     Match.create(uuid)
   end
 
+  def setup()
+    Game.setup()
+  end
+
+  def takeTurn()
+    Game.takeTurn()
+  end
+
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
   end

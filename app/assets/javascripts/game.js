@@ -2,6 +2,7 @@ var Game = function(element, playerId) {
   console.log("GAME CREATED", playerId)
   this.element = $(element); // This element is game-container. We can put stuff there!
   this.init = function() {
+    this.turn == 0
     this.center_deck = [];
     this.remaining_deck = [];
     this.players = [[],[],[],[]];
@@ -14,53 +15,65 @@ var Game = function(element, playerId) {
         this.remaining_deck.push([this.ranks[i],this.suites[j]]);
       }
     }
-    this.distributeCards();
-    //
-    // //Create the hands of players
+    if (playerId == 0) {
+      this.distributeCards();
+    }
+    
   };
   this.start = function() {
     this.init()
-    // TODO: If we decide to go the primarily JS/ActionScript route,
-    // then we would move most of the logic from game.rb into here,
-    // similar to the game.js file in the tic-tac-toe tutorial.
-    console.log("We started!");
-    console.log("player", playerId);
-    console.log(this.remaining_deck.length);
-    console.log(this.players.length);
     var displayCards = this.players;
     displayCards.splice(playerId,1);
 
     //player can only see other players' cards
-    $('#card1').html(displayCards);
-    console.log(this.players[playerId]);
-    $('#status').html('Your turn');
-    //this.displayCards();
+    //$('#card1').html(displayCards);
+    //console.log(this.players[playerId]);
+    if (playerId == 0) {
+      $('#status').html('Your turn');
+    } else {
+      $('#status').html('Waiting for Player0 to play.');
+    }
 
   }
 
   this.distributeCards = function() {
-    for (i = 0; i < this.players.length; i++) {
-      var x = 0;
-      while (x < 5) {
-        console.log(x);
-        var index = Math.floor(Math.random() * this.remaining_deck.length);
-        this.players[i].push(this.remaining_deck[index]);
-        this.remaining_deck.splice(index,1);
-        x += 1;
-      }
-    };
+    // for (i = 0; i < this.players.length; i++) {
+    //   var x = 0;
+    //   while (x < 5) {
+    //     var index = Math.floor(Math.random() * this.remaining_deck.length);
+    //     this.players[i].push(this.remaining_deck[index]);
+    //     this.remaining_deck.splice(index,1);
+    //     x += 1;
+    //   }
+    // };
+    App.game.setup();
   };
 
-  // this.displayCards = function() {
-  //   $("now").html("happy");
-  //   var newHTML = [];
-  //   for (i = 0; i < this.players.length; i++) {
-  //     newHTML.push('<span>' + '2' + '</span>');
-  //     $("players").html(i);
-  //     console.log("????");
-  //   }
+  this.showCards = function(cards) {
+    var handArr = []
+    for (var hand of cards) {
+      console.log("HAND: ", hand);
+      var cardStr = "["
+      for (var card of hand) {
+        console.log("__card__", card)
+        cardStr += card[0] + card[1] + ", "
+      }
+      cardStr += "], "
+      handArr += cardStr
+    }
 
+    $('#card1').html(handArr);
+  }
 
+  this.takeTurn = function() {
+    App.game.takeTurn();
+  }
+
+  this.turnFinished = function() {
+    console.log("Turn finished!");
+    // Later, do more with this turn
+    this.turn == (this.turn + 1) % 4 //TODO(olivia): Later come back and don't hard code 4 players
+  }
 
 
   this.start();

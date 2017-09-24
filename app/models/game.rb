@@ -4,20 +4,21 @@
 class Game < ApplicationRecord
   attr_accessor :center_deck, :remaining_deck, :players,
                 :hint_counter, :bomb_counter
-  def self.start(player1, player2)
-    # Randomly choses who gets to be noughts or crosses
-    player0, player1 = [player1, player2].shuffle #TODO: Later modify to work with variable # players
+  def self.start(player1, player2, player3="player3uid", player4="player4uid")
+    @playerIds = [player1, player2].shuffle #TODO: Later modify to work with variable # players
+    player0 = @playerIds[0]
+    player1 = @playerIds[1]
 
     # Broadcast back to the players subscribed to the channel that the game has started
     ActionCable.server.broadcast "player_#{player0}", {action: "game_start", msg: 0}
     ActionCable.server.broadcast "player_#{player1}", {action: "game_start", msg: 1}
 
     # Store the details of each opponent
-    REDIS.set("opponent_for:#{player0}", player1)
-    REDIS.set("opponent_for:#{player1}", player0)
+    # REDIS.set("opponent_for:#{player0}", player1) #TODO(olivia: I think we can delete this. Verify.
+    # REDIS.set("opponent_for:#{player1}", player0)
 end
 
-  def initialize(user_names=%w[ Gavin Jasmine Nupur Olivia ])
+  def self.setup(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     puts "INITIALIZING GAME!"
     @user_names = user_names
     @center_deck = []
@@ -30,27 +31,47 @@ end
     ranks = %i[ 1 1 1 2 2 3 3 4 4 5 ]
     suites.each do |suite|
       ranks.each do |rank|
-        @remaining_deck << Card.new(rank, suite)
+        @remaining_deck << [rank, suite, false, false] #Card.new(rank, suite)
       end
     end
     @user_names.each do |user_name|
       hand = Hand.new([])
       @players << Player.new(user_name, hand)
     end
-    distributeCards()
+    self.distributeCards()
   end
 
-  def distributeCards()
-    @players.each do |player|
+  def self.distributeCards()
+
+    puts "Distributing Cards in game.rb!"
+    @hands = []
+    @playerIds.each do |player|
       x = 0
+      hand = []
       while x < 5
         index = rand(@remaining_deck.length)
-        player.hand.addCard(@remaining_deck[index])
+        hand.push(@remaining_deck[index])
+        #player.hand.addCard(@remaining_deck[index])
         @remaining_deck.delete_at(index)
         x += 1
       end
+      @hands.push(hand)
+    end
+    
+    puts @hands
+    self.messageAll({action: "distribute_cards", msg: @hands})
+    # player0 = @playerIds[0]
+    # player1 = @playerIds[1]
+    # ActionCable.server.broadcast "player_#{player0}", {action: "distribute_cards", msg: "PLAYER 0 GOT STUFF!!!"}
+    # ActionCable.server.broadcast "player_#{player1}", {action: "distribute_cards", msg: "PLAYER 1 GOT STUF!!!"}
+  end
+
+  def self.messageAll(broadcast)
+    @playerIds.each do |id|
+      ActionCable.server.broadcast "player_#{id}", broadcast
     end
   end
+
 
   def play()
     over = gameOver()
@@ -130,6 +151,10 @@ end
     bomb_counter == 0
       over = true
     over #returned
+  end
+
+  def takeTurn()
+    self.messageAll({action: "turn_finished", msg: true});
   end
 
 end
