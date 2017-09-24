@@ -43,7 +43,7 @@ var Game = function(element, playerId) {
     $('#take-turn').click(function(e){
       e.preventDefault();
       $('#your-turn').hide();
-      App.game.takeTurn(playerId, "play", ["5", "A"]); //TODO: Don't hard-code this.
+      App.game.takeTurn(playerId, this.turnType, this.cardOption); //TODO: Don't hard-code this.
     });
 
     $("#play-options input:radio").click(function(e) {
@@ -64,6 +64,10 @@ var Game = function(element, playerId) {
         default:
           break;
       }
+    });
+
+    $("#card-options input:radio").click(function(e) {
+      this.cardOption = e.target.value;
     });
 
   }
