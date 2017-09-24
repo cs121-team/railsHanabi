@@ -20,6 +20,7 @@ App.game = App.cable.subscriptions.create "GameChannel",
         App.gamePlay.showCards(data.msg)
 
       when "turn_finished"
+        console.log("TURN FINISHED!!!");
         App.gamePlay.turnFinished()
         #App.gamePlay.move data.move
         #App.gamePlay.getTurn()

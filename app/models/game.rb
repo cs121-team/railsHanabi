@@ -16,7 +16,7 @@ class Game < ApplicationRecord
     # Store the details of each opponent
     # REDIS.set("opponent_for:#{player0}", player1) #TODO(olivia: I think we can delete this. Verify.
     # REDIS.set("opponent_for:#{player1}", player0)
-end
+  end
 
   def self.setup(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     puts "INITIALIZING GAME!"
@@ -153,7 +153,8 @@ end
     over #returned
   end
 
-  def takeTurn()
+  def self.takeTurn()
+    puts "TAKING A TURN!!!"
     self.messageAll({action: "turn_finished", msg: true});
   end
 
