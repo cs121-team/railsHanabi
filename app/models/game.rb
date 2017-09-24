@@ -38,6 +38,11 @@ class Game < ApplicationRecord
   end
 
   def self.distributeCards()
+    hands = self.getHands()
+    self.messageAll({action: "distribute_cards", msg: @hands}) # TODO: Don't send people their own cards
+  end
+
+  def self.getHands()
     @hands = []
     @playerIds.each do |player|
       x = 0
@@ -51,9 +56,8 @@ class Game < ApplicationRecord
       end
       @hands.push(hand)
     end
-    
-    self.messageAll({action: "distribute_cards", msg: @hands}) # TODO: Don't send people their own cards
-  end
+    return @hands
+  end 
 
   def self.messageAll(broadcast)
     @playerIds.each do |id|
@@ -76,9 +80,10 @@ class Game < ApplicationRecord
 
   def self.playable(card)
     puts "PLAYABLE?"
-    # TODO: true if the card can be played based on other cards in the center pile
-    @center_deck.any?{|center_card| center_card.suite == card.suite &&
-      @center_card.rank == (card.rank - 1)}
+    # TODO: should be true if the card can be played based on other cards in the center pile
+    return true
+    # @center_deck.any?{|center_card| center_card.suite == card.suite &&
+    #   @center_card.rank == (card.rank - 1)}
   end
 
   def self.addToCenterStack(card)
@@ -154,8 +159,12 @@ class Game < ApplicationRecord
   end
 
   def self.sendGameState()
-    puts "SENDING GAME STATE"
-    self.messageAll({action: "update_state"})
+    self.messageAll({action: "updated_state", msg: {
+      hands: @hands,
+      hint_counter: @hint_counter,
+      bomb_counter: @bomb_counter
+    }})
+
   end
 
 end
