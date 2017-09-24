@@ -14,8 +14,9 @@ var Game = function(element, playerId) {
         this.remaining_deck.push([this.ranks[i],this.suites[j]]);
       }
     }
-    this.distributeCards();
-    //
+    if (playerId == 0) {
+      this.distributeCards();
+    }
     // //Create the hands of players
   };
   this.start = function() {
@@ -23,16 +24,16 @@ var Game = function(element, playerId) {
     // TODO: If we decide to go the primarily JS/ActionScript route,
     // then we would move most of the logic from game.rb into here,
     // similar to the game.js file in the tic-tac-toe tutorial.
-    console.log("We started!");
-    console.log("player", playerId);
-    console.log(this.remaining_deck.length);
-    console.log(this.players.length);
+    // console.log("We started!");
+    // console.log("player", playerId);
+    // console.log(this.remaining_deck.length);
+    // console.log(this.players.length);
     var displayCards = this.players;
     displayCards.splice(playerId,1);
 
     //player can only see other players' cards
-    $('#card1').html(displayCards);
-    console.log(this.players[playerId]);
+    //$('#card1').html(displayCards);
+    //console.log(this.players[playerId]);
     $('#status').html('Your turn');
     //this.displayCards();
 
@@ -42,14 +43,21 @@ var Game = function(element, playerId) {
     for (i = 0; i < this.players.length; i++) {
       var x = 0;
       while (x < 5) {
-        console.log(x);
         var index = Math.floor(Math.random() * this.remaining_deck.length);
         this.players[i].push(this.remaining_deck[index]);
         this.remaining_deck.splice(index,1);
         x += 1;
       }
     };
+    App.game.setup();
   };
+
+  this.showCards = function(cards) {
+    $('#card1').html(cards);
+  }
+
+  
+
 
   // this.displayCards = function() {
   //   $("now").html("happy");
