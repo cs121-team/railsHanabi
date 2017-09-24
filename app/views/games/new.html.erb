@@ -3,22 +3,22 @@
 <div id="status"></div>
 <div id="game-container"></div>
 <div id="card1"></div>
-<div id="your-turn">
-  <form action="">
+<div id="your-turn" style="display: none;">
+  <div id="play-options" >
     <input type="radio" name="turn-type" value="play">Play a Card<br>
     <input type="radio" name="turn-type" value="hint">Give a Hint<br>
     <input type="radio" name="turn-type" value="discard">Discard a Card<br>
-  </form>
+  </div>
 
-  <form action="">
-    <input type="radio" name="hint-reciever" value=0>Player 0<br>
+  <div id="hints" style="display: none;">
+    <input type="radio" name="hint-reciever" value=0>Player 0<br> <!-- TODO(olivia): Only show players who are playing, and not yourself -->
     <input type="radio" name="hint-reciever" value=1>Player 1<br>
     <input type="radio" name="hint-reciever" value=2>Player 2<br>
     <input type="radio" name="hint-reciever" value=3>Player 3<br>
     <input type="radio" name="hint-reciever" value=4>Player 4<br>
-  </form>
+  </div>
 
-  <form action="">
+  <div id="my-cards" style="display: none;">
     <input type="radio" name="card-selector" value=0>Card 0<br>
     <input type="radio" name="card-selector" value=1>Card 1<br>
     <input type="radio" name="card-selector" value=2>Card 2<br>
@@ -26,7 +26,7 @@
     <input type="radio" name="card-selector" value=4>Card 4<br>
   </form>
 
-  <button onclick="Game.takeTurn()">Complete Turn</button>
+  <button id="take-turn">Complete Turn</button> <!-- TODO(olivia): Make this ony show up when you've chosen a valid word. -->
 
 </div>
 <!-- But we only want logged in users...? -->

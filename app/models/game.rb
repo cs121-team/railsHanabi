@@ -12,11 +12,7 @@ class Game < ApplicationRecord
     # Broadcast back to the players subscribed to the channel that the game has started
     ActionCable.server.broadcast "player_#{player0}", {action: "game_start", msg: 0}
     ActionCable.server.broadcast "player_#{player1}", {action: "game_start", msg: 1}
-
-    # Store the details of each opponent
-    # REDIS.set("opponent_for:#{player0}", player1) #TODO(olivia: I think we can delete this. Verify.
-    # REDIS.set("opponent_for:#{player1}", player0)
-end
+  end
 
   def self.setup(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     puts "INITIALIZING GAME!"
@@ -42,8 +38,11 @@ end
   end
 
   def self.distributeCards()
+    hands = self.getHands()
+    self.messageAll({action: "distribute_cards", msg: @hands}) # TODO: Don't send people their own cards
+  end
 
-    puts "Distributing Cards in game.rb!"
+  def self.getHands()
     @hands = []
     @playerIds.each do |player|
       x = 0
@@ -57,14 +56,8 @@ end
       end
       @hands.push(hand)
     end
-    
-    puts @hands
-    self.messageAll({action: "distribute_cards", msg: @hands})
-    # player0 = @playerIds[0]
-    # player1 = @playerIds[1]
-    # ActionCable.server.broadcast "player_#{player0}", {action: "distribute_cards", msg: "PLAYER 0 GOT STUFF!!!"}
-    # ActionCable.server.broadcast "player_#{player1}", {action: "distribute_cards", msg: "PLAYER 1 GOT STUF!!!"}
-  end
+    return @hands
+  end 
 
   def self.messageAll(broadcast)
     @playerIds.each do |id|
@@ -73,45 +66,31 @@ end
   end
 
 
-  def play()
-    over = gameOver()
-    while (!over)
-      # play the game
-      # TODO: give users options: play a card, discard a card, or give a hint
-
-      # TODO: if the user wants to play a card, ask them to select the card
-      # then, call playCard()
-
-      # TODO: if the user wants to discard, call discardCard()
-
-      # TODO: if the user wants to give a hint, call giveHint()
-
-      # Move to next person's turn
-      over = gameOver()
-    end
-  end
-
-  def playCard()
-    # ask the user to select a card, save this as card
-
+  def self.playCard(player, card)
+    puts "PLAYING CARD"
     if (playable(card))
+      puts "YES"
       addToCenterStack(card)
+      self.sendGameState()
     else
-      bomb_counter -= 1
+      puts "NO"
+      @bomb_counter -= 1
     end
   end
 
-  def playable(card)
-    # TODO: true if the card can be played based on other cards in the center pile
-    center_deck.any?{|center_card| center_card.suite == card.suite &&
-      center_card.rank == (card.rank - 1)}
+  def self.playable(card)
+    puts "PLAYABLE?"
+    # TODO: should be true if the card can be played based on other cards in the center pile
+    return true
+    # @center_deck.any?{|center_card| center_card.suite == card.suite &&
+    #   @center_card.rank == (card.rank - 1)}
   end
 
-  def addToCenterStack(card)
-    center_deck << card;
+  def self.addToCenterStack(card)
+    @center_deck << card;
   end
 
-  def giveHint()
+  def self.giveHint()
     suiteHint = false
     rankHint = false
     # provide options that person could choose from
@@ -135,7 +114,7 @@ end
     end
   end
 
-  def discardCard()
+  def self.discardCard()
     # let the user choose a card to discard
 
     # remove the card from their hand
@@ -146,15 +125,46 @@ end
     hint_counter += 1
   end
 
-  def gameOver()
+  def self.gameOver()
     over = false
-    bomb_counter == 0
+    @bomb_counter == 0
       over = true
     over #returned
   end
 
-  def takeTurn()
-    self.messageAll({action: "turn_finished", msg: true});
+  def self.takeTurn(data)
+    message = data['message']
+    turnVal = message["turnVal"]
+    puts ">>>>>>>>>> TAKING TURN <<<<<<<<<<<<"
+    puts message
+    puts message["playerId"]
+    player = @players[message["playerId"]] # TODO(olivia): figure out how message works
+
+    #gameOver = !self.gameOver()
+    if true
+      case message["turnType"]
+      when "play"
+        card = Card.new(turnVal[0], turnVal[1]) #rank, suite
+        self.playCard(player, card)
+      when "hint"
+        puts "hints not implemented yet"
+      when "discard"
+        puts "discarding not implemented yet"
+        card = Card.new(turnVal[0], turnVal[1]) #rank, suite
+      else
+        puts "THIS IS SOME WEIRD INVALID THING"
+      #self.messageAll({action: "turn_finished", msg: true});
+      end
+    end
+  end
+
+  def self.sendGameState()
+    self.messageAll({action: "updated_state", msg: {
+      hands: @hands,
+      hint_counter: @hint_counter,
+      bomb_counter: @bomb_counter
+    }})
+
   end
 
 end

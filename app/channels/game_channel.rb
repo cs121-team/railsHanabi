@@ -8,8 +8,8 @@ class GameChannel < ApplicationCable::Channel
     Game.setup()
   end
 
-  def takeTurn()
-    Game.takeTurn()
+  def takeTurn(message)
+    Game.takeTurn(message)
   end
 
   def unsubscribed
