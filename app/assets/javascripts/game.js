@@ -43,7 +43,7 @@ var Game = function(element, playerId) {
     $('#take-turn').click(function(e){
       e.preventDefault();
       $('#your-turn').hide();
-      App.game.takeTurn();
+      App.game.takeTurn(playerId, "play", ["5", "A"]); //TODO: Don't hard-code this.
     });
 
     $("#play-options input:radio").click(function(e) {

@@ -32,14 +32,17 @@ App.game = App.cable.subscriptions.create "GameChannel",
         $('#status').html("Opponent withdraw, You win!")
         $('#new-match').removeClass('hidden');
 
+      when "update_state"
+        console.log("AWW YEAH, UPDATED STATE!!!!");
+
   setup: (cards) ->
     console.log("distributeCards got called in game.coffee!!!")
-    @perform "setup"
+    @perform("setup")
 
-  takeTurn: () ->
-    console.log("About to take a turn!");
-    @perform "takeTurn"
-
+  takeTurn: (playerId, turnType, turnVal) ->
+    console.log("About to take a turn!", playerId, turnVal);
+    @perform "takeTurn", message: {playerId: playerId, turnType: turnType, turnVal: turnVal}
+    #@perform "takeTurn", message: [playerId, turnType, turnVal]
 
   disconnected: ->
     # Called when the subscription has been terminated by the server
