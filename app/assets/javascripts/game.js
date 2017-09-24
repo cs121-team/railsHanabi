@@ -1,5 +1,9 @@
 var Game = function(element, playerId) {
   this.element = $(element); // This element is game-container. We can put stuff there!
+  var turnType = 'blah';
+  var hintToPlayer;
+  var hint;
+
   this.init = function() {
     this.turn = 0
     this.center_deck = [];
@@ -38,18 +42,24 @@ var Game = function(element, playerId) {
   }
 
   this.bindEvents = function() {
+
     $('#take-turn').click(function(e){
       e.preventDefault();
       $('#your-turn').hide()
-      if (this.turnType == "hint") {
-		App.game.takeTurn(playerId, this.turnType, [this.hintToPlayer, this.hint]);
+      if (turnType == "hint") {
+      	console.log(turnType);
+      	console.log(hintToPlayer);
+      	console.log(hint);
+		App.game.takeTurn(playerId, turnType, [hintToPlayer, hint]);
       } else {
-      	App.game.takeTurn(playerId, this.turnType, this.card);
+      	console.log(turnType);
+      	console.log(card);
+      	App.game.takeTurn(playerId, turnType, card);
       }
     });
 
     $("#play-options input:radio").click(function(e) {
-      this.turnType = e.target.value;
+      turnType = e.target.value;
       $('#hint-list').hide();
       switch(e.target.value) {
         case "play":
@@ -70,17 +80,17 @@ var Game = function(element, playerId) {
     });
 
     $("#my-cards input:radio").click(function(e) {
-      this.card = e.target.value;
+      card = e.target.value;
     });
 
     $("#hint-players input:radio").click(function(e) {
-      this.hintToPlayer = e.target.value;
+      hintToPlayer = e.target.value;
       console.log('trying to show hints?');
       $('#hint-list').show();
     });
 
     $("#hint-list input:radio").click(function(e) {
-      this.hint = e.target.value;
+      hint = e.target.value;
     });
 
   }

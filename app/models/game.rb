@@ -90,9 +90,7 @@ class Game < ApplicationRecord
     @center_deck << card;
   end
 
-  def self.giveHint()
-    suiteHint = false
-    rankHint = false
+  def self.giveHint(player, hint)
     # provide options that person could choose from
     #   list of players, and either rank or suite that they could pick from
     #   store the type of hint (either suite or rank) by setting it true
@@ -100,15 +98,12 @@ class Game < ApplicationRecord
     # TODO: for the chosen hint, identify list of all cards that are affected
     hintCards = []
 
-    # set the hint to true for the specified card
-    if suiteHint
-      hintCards.each do |card|
+    hand = @players[player].hand
+    hand.each do |card|
+      if card.suite == hint
         card.knowsSuite = true
       end
-    end
-
-    if rankHint
-      hintCards.each do |card|
+      if card.rank == hint
         card.knowsRank = true
       end
     end
