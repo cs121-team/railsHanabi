@@ -19,9 +19,10 @@ App.game = App.cable.subscriptions.create "GameChannel",
         console.log("I GOT MY CARDS!!!!!! " + data.msg);
         App.gamePlay.showCards(data.msg)
 
-      when "take_turn"
-        App.gamePlay.move data.move
-        App.gamePlay.getTurn()
+      when "turn_finished"
+        App.gamePlay.turnFinished()
+        #App.gamePlay.move data.move
+        #App.gamePlay.getTurn()
 
       when "new_game"
         App.gamePlay.newGame()
@@ -33,6 +34,10 @@ App.game = App.cable.subscriptions.create "GameChannel",
   setup: (cards) ->
     console.log("distributeCards got called in game.coffee!!!")
     @perform "setup"
+
+  takeTurn: () ->
+    console.log("About to take a turn!");
+    @perform "takeTurn"
 
 
   disconnected: ->

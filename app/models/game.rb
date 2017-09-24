@@ -153,6 +153,10 @@ end
     over #returned
   end
 
+  def takeTurn()
+    self.messageAll({action: "turn_finished", msg: true});
+  end
+
 end
 
 

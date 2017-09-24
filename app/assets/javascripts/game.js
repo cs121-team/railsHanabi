@@ -37,15 +37,15 @@ var Game = function(element, playerId) {
   }
 
   this.distributeCards = function() {
-    for (i = 0; i < this.players.length; i++) {
-      var x = 0;
-      while (x < 5) {
-        var index = Math.floor(Math.random() * this.remaining_deck.length);
-        this.players[i].push(this.remaining_deck[index]);
-        this.remaining_deck.splice(index,1);
-        x += 1;
-      }
-    };
+    // for (i = 0; i < this.players.length; i++) {
+    //   var x = 0;
+    //   while (x < 5) {
+    //     var index = Math.floor(Math.random() * this.remaining_deck.length);
+    //     this.players[i].push(this.remaining_deck[index]);
+    //     this.remaining_deck.splice(index,1);
+    //     x += 1;
+    //   }
+    // };
     App.game.setup();
   };
 
@@ -66,6 +66,11 @@ var Game = function(element, playerId) {
   }
 
   this.takeTurn = function() {
+    App.game.takeTurn();
+  }
+
+  this.turnFinished = function() {
+    console.log("Turn finished!");
     // Later, do more with this turn
     this.turn == (this.turn + 1) % 4 //TODO(olivia): Later come back and don't hard code 4 players
   }
