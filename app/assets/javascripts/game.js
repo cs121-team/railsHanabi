@@ -116,12 +116,13 @@ var Game = function(element, playerId) {
           card = data.hands[playerId][i];
         };
       };
+      console.log(card);
       if ($('#play').is(':checked')) {
         console.log(this.center_deck.length);
         this.center_deck.push([card[0],card[1]]);
         console.log(this.center_deck.length);
       };
-      if ($('#hint').is(':checked')) {
+      if ($('#discard').is(':checked')) {
         console.log(this.discard_deck.length);
         this.discard_deck.push([card[0],card[1]]);
         console.log(this.discard_deck.length);
