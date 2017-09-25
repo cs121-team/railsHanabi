@@ -8,7 +8,6 @@ App.game = App.cable.subscriptions.create "GameChannel",
     switch data.action
 
       when "game_start"
-        $('#status').html("Your player ID: " + data.msg)
         App.gamePlay = new Game('game-container', data.msg)
 
       when "distribute_cards"

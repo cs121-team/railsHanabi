@@ -17,7 +17,7 @@ class Game < ApplicationRecord
   def self.setup(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     puts "INITIALIZING GAME!"
     @user_names = user_names
-    @center_deck = []
+    @center_deck = [nil, nil, nil, nil, nil]
     @remaining_deck = []
     @players = []
     @hint_counter = 8
@@ -66,28 +66,66 @@ class Game < ApplicationRecord
   end
 
 
-  def self.playCard(player, card)
+  def self.playCard(playerId, cardIndex)
     puts "PLAYING CARD"
-    if (playable(card))
+    puts playerId, cardIndex, cardIndex.class
+    puts '>>>>>>>>>', @hands[playerId], '<<<<<<<<<<<<<'
+    #puts @hands[playerId][cardIndex]
+    hand = @hands[playerId]
+    card = hand[cardIndex]
+    puts "GOT OUR CARD"
+    puts card
+    if (self.playable(card))
       puts "YES"
-      addToCenterStack(card)
-      self.sendGameState()
+      self.addToCenterStack(card)
     else
       puts "NO"
       @bomb_counter -= 1
     end
+    self.removePlayersCard(playerId, card)
+    self.sendGameState()
+  end
+
+  def self.removePlayersCard(playerId, card)
+    puts "REMOVING PLAYER CARD"
+    hand = @hands[playerId]
+    for i in 0..4
+      currentCard = hand[i]
+      if currentCard[0] == card[0] and currentCard[1] == card[1]
+        hand[i] = self.getNewCard()
+      end
+    end
+  end
+
+  def self.getNewCard()
+    index = rand(@remaining_deck.length)
+    newCard = @remaining_deck[index]
+    @remaining_deck.delete_at(index)
+    return newCard
+  end
+
+  def self.getSuitId(suit)
+    puts "getting suit id"
+    return ['A','B','C','D','E'].index(suit);
   end
 
   def self.playable(card)
-    puts "PLAYABLE?"
-    # TODO: should be true if the card can be played based on other cards in the center pile
-    return true
-    # @center_deck.any?{|center_card| center_card.suite == card.suite &&
-    #   @center_card.rank == (card.rank - 1)}
+    puts "CHECK PLAYABLE"
+    rank = card[0]
+    puts rank
+    suit = self.getSuitId(card[1])
+    puts card
+    topCard = @center_deck[suit]
+    if topCard.nil? # No top card
+      return rank == 1
+    end
+    return rank = topCard + 1
   end
 
   def self.addToCenterStack(card)
-    @center_deck << card;
+    puts "ADDING TO CENTER"
+    suit = self.getSuitId(card[1])
+    @center_deck[suit] = card[0]
   end
 
   def self.giveHint(player, hint)
@@ -147,14 +185,17 @@ class Game < ApplicationRecord
     puts ">>>>>>>>>> TAKING TURN <<<<<<<<<<<<"
     puts message
     puts message["playerId"]
-    player = @players[message["playerId"]] # TODO(olivia): figure out how message works
+    playerId = message["playerId"]
+    player = @players[playerId] # TODO(olivia): figure out how message works
 
     #gameOver = !self.gameOver()
     if true
       case message["turnType"]
       when "play"
-        card = Card.new(turnVal[0], turnVal[1]) #rank, suite
-        self.playCard(player, card)
+        puts "TURN VAL"
+        puts turnVal
+        #card = Card.new(turnVal[0], turnVal[1]) #rank, suite
+        self.playCard(playerId, turnVal)
       when "hint"
         self.giveHint(turnVal[0], turnVal[1])
       when "discard"

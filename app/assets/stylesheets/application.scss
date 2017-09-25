@@ -29,3 +29,16 @@
   -webkit-transition: opacity 0.3s linear;
   transition: opacity 0.3s linear;
 }
+.my-card {
+  width: 200;
+  height: 200;
+  display: inline-block;
+  border: 2px purple;
+}
+
+.center-card {
+  width: 200;
+  height: 200;
+  display: inline-block;
+  border: 2px purple;
+}

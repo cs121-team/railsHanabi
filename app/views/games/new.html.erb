@@ -1,49 +1,68 @@
-<h1>Set up your game!</h1>
-<p>Find people to play with...</p>
+<h1>Let's Play Hanabi!</h1>
+<h2 id="player-id"></h2>
 <div id="status"></div>
-<div id="game-container"></div>
-<div id="card1"></div>
-<div id="your-turn" style="display: none;">
-  <div id="play-options" >
-    <input id = "play" type="radio" name="turn-type" value="play">Play a Card<br>
-    <input id = "hint" type="radio" name="turn-type" value="hint">Give a Hint<br>
-    <input id = "discard" type="radio" name="turn-type" value="discard">Discard a Card<br>
+<hr>
+<div id="game-container" style="display: none;">
+  <h3> Other Players' Hands</h3>
+  <div>An asterisk means that the player knows this feature of the card.</div>
+  <div id="card1"></div>
+
+  <h3>My Hand</h3>
+  <div class="my-card" id="my-card-0">[]</div>
+  <div class="my-card" id="my-card-2">[]</div>
+  <div class="my-card" id="my-card-1">[]</div>
+  <div class="my-card" id="my-card-3">[]</div>
+  <div class="my-card" id="my-card-4">[]</div>
+
+  <h3>Center Pile</h3>
+  <div class="center-card" id="center-card-0">[]</div>
+  <div class="center-card" id="center-card-1">[]</div>
+  <div class="center-card" id="center-card-2">[]</div>
+  <div class="center-card" id="center-card-3">[]</div>
+  <div class="center-card" id="center-card-4">[]</div>
+
+  <h3>Hint Counter</h3>
+  <div id="hint-counter">8</div>
+  <h3>Bomb Counter</h3>
+  <div id="bomb-counter">3</div>
+
+  <hr>
+  <div id="your-turn" style="display: none;">
+    <div id="play-options" >
+      <input id = "play" type="radio" name="turn-type" value="play">Play a Card<br>
+      <input id = "hint" type="radio" name="turn-type" value="hint">Give a Hint<br>
+      <input id = "discard" type="radio" name="turn-type" value="discard">Discard a Card<br>
+    </div>
+
+    <div id="hint-players" style="display: none;">
+      <input type="radio" name="hint-reciever" value=0>Player 0<br> <!-- TODO(olivia): Only show players who are playing, and not yourself -->
+      <input type="radio" name="hint-reciever" value=1>Player 1<br>
+      <input type="radio" name="hint-reciever" value=2>Player 2<br>
+      <input type="radio" name="hint-reciever" value=3>Player 3<br>
+      <input type="radio" name="hint-reciever" value=4>Player 4<br>
+    </div>
+
+    <div id="my-cards" style="display: none;">
+      <input type="radio" name="card-selector" value=0>Card 0<br>
+      <input type="radio" name="card-selector" value=1>Card 1<br>
+      <input type="radio" name="card-selector" value=2>Card 2<br>
+      <input type="radio" name="card-selector" value=3>Card 3<br>
+      <input type="radio" name="card-selector" value=4>Card 4<br>
+    </div>
+
+    <div id="hint-list" style="display: none;">
+      <input type="radio" name="hint-selector" value=1>1<br>
+      <input type="radio" name="hint-selector" value=2>2<br>
+      <input type="radio" name="hint-selector" value=3>3<br>
+      <input type="radio" name="hint-selector" value=4>4<br>
+      <input type="radio" name="hint-selector" value=5>5<br>
+      <input type="radio" name="hint-selector" value=6>A<br>
+      <input type="radio" name="hint-selector" value=7>B<br>
+      <input type="radio" name="hint-selector" value=8>C<br>
+      <input type="radio" name="hint-selector" value=9>D<br>
+      <input type="radio" name="hint-selector" value=10>E<br>
+    </div>
+
+    <button id="take-turn">Complete Turn</button> <!-- TODO(olivia): Make this ony show up when you've chosen a valid word. -->
   </div>
-
-  <div id="hint-players" style="display: none;">
-    <input type="radio" name="hint-reciever" value=0>Player 0<br> <!-- TODO(olivia): Only show players who are playing, and not yourself -->
-    <input type="radio" name="hint-reciever" value=1>Player 1<br>
-    <input type="radio" name="hint-reciever" value=2>Player 2<br>
-    <input type="radio" name="hint-reciever" value=3>Player 3<br>
-    <input type="radio" name="hint-reciever" value=4>Player 4<br>
-  </div>
-
-  <div id="my-cards" style="display: none;">
-    <input type="radio" name="card-selector" value=0>Card 0<br>
-    <input type="radio" name="card-selector" value=1>Card 1<br>
-    <input type="radio" name="card-selector" value=2>Card 2<br>
-    <input type="radio" name="card-selector" value=3>Card 3<br>
-    <input type="radio" name="card-selector" value=4>Card 4<br>
-  </div>
-
-  <div id="hint-list" style="display: none;">
-    <input type="radio" name="hint-selector" value=1>1<br>
-    <input type="radio" name="hint-selector" value=2>2<br>
-    <input type="radio" name="hint-selector" value=3>3<br>
-    <input type="radio" name="hint-selector" value=4>4<br>
-    <input type="radio" name="hint-selector" value=5>5<br>
-    <input type="radio" name="hint-selector" value=6>A<br>
-    <input type="radio" name="hint-selector" value=7>B<br>
-    <input type="radio" name="hint-selector" value=8>C<br>
-    <input type="radio" name="hint-selector" value=9>D<br>
-    <input type="radio" name="hint-selector" value=10>E<br>
-  </div>
-
-  <button id="take-turn">Complete Turn</button> <!-- TODO(olivia): Make this ony show up when you've chosen a valid word. -->
-
 </div>
-<!-- But we only want logged in users...? -->
-<% @users = User.all %>
-<% @users.each do |user| %>
-  <%= user.email %><br/>
-<% end %>

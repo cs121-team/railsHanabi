@@ -3,6 +3,7 @@ var Game = function(element, playerId) {
   var turnType = 'blah';
   var hintToPlayer;
   var hint;
+  $('#player-id').html('You Are Player ' + playerId)
 
   this.init = function() {
     this.turn = 0
@@ -34,20 +35,14 @@ var Game = function(element, playerId) {
     this.init();
     this.bindEvents();
     var displayCards = [];
+    $('#game-container').show()
+
     //deep copy
     for (var i =0; i<this.players.length; i++){
       if (playerId != i) {
         displayCards.push(this.players[i])
       }
     };
-
-    //player can only see other players' cards
-    //$('#card1').html(displayCards);
-    if (playerId == 0) {
-      $('#status').html('Your turn');
-    } else {
-      $('#status').html('Waiting for Player0 to play.');
-    }
 
   }
 
@@ -57,13 +52,8 @@ var Game = function(element, playerId) {
       e.preventDefault();
       $('#your-turn').hide()
       if (turnType == "hint") {
-      	console.log(turnType);
-      	console.log(hintToPlayer);
-      	console.log(hint);
-		App.game.takeTurn(playerId, turnType, [hintToPlayer, hint]);
+		    App.game.takeTurn(playerId, turnType, [hintToPlayer, hint]);
       } else {
-      	console.log(turnType);
-      	console.log(card);
       	App.game.takeTurn(playerId, turnType, card);
       }
     });
@@ -92,7 +82,7 @@ var Game = function(element, playerId) {
     });
 
     $("#my-cards input:radio").click(function(e) {
-      card = e.target.value;
+      card = parseInt(e.target.value);
     });
 
     $("#hint-players input:radio").click(function(e) {
@@ -113,16 +103,48 @@ var Game = function(element, playerId) {
 
   this.showCards = function(cards) {
     var handArr = []
-    for (var hand of cards) {
-      var cardStr = "["
-      for (var card of hand) {
-        cardStr += card[0] + card[1] + ", "
+    for (var i = 0; i < cards.length; i++) {
+      if (i == playerId) {
+        var hand = cards[i];
+        for (var j = 0; j < hand.length; j++) {
+          var card = hand[j];
+          if (card[2]) {
+            $('#my-card-' + j).html(card[0] + ' ');
+          }
+          if (card[3]) {
+            $('#my-card-' + j).html($('#my-card-' + j).html() + card[1] + ' ');
+          }
+        }
+      } else {
+        var hand = cards[i];
+        var cardStr = "Player " + i + ": ["
+        for (var card of hand) {
+          cardStr += card[0] //rank
+          if (card[2]) {
+            cardStr += "*" //rank known
+          }
+          cardStr += card[1] //suit
+          if (card[3]) {
+            cardStr += "*" //suit known
+          }
+          cardStr += ", "
+        }
+        cardStr += "], "
+        handArr += cardStr
       }
-      cardStr += "], "
-      handArr += cardStr
     }
-
     $('#card1').html(handArr);
+  }
+
+  this.showCenterPile = function(cards) {
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      if (card[0] != null) {
+        $('#center-card-' + i).html('[' + card[0] + card[1] + ']');
+      } else {
+        $('#center-card-' + i).html('[empty]');
+      }
+    }
   }
 
   this.turnFinished = function() {
@@ -136,6 +158,10 @@ var Game = function(element, playerId) {
   this.updatedState = function(data) {
     console.log("WE GOT DATA!!!!!!!!!");
     console.log(data);
+    $('#hint-counter').html(data['hint_counter']);
+    $('#bomb-counter').html(data['bomb_counter']);
+
+
     if(!$('#hint').is(':checked')) {
       var cards = document.getElementsByName("card-selector");
       var card = null;
@@ -144,16 +170,11 @@ var Game = function(element, playerId) {
           card = data.hands[playerId][i];
         };
       };
-      console.log(card);
       if ($('#play').is(':checked')) {
-        console.log(this.center_deck.length);
         this.center_deck.push([card[0],card[1]]);
-        console.log(this.center_deck.length);
       };
       if ($('#discard').is(':checked')) {
-        console.log(this.discard_deck.length);
         this.discard_deck.push([card[0],card[1]]);
-        console.log(this.discard_deck.length);
       };
     };
     this.turnFinished();
