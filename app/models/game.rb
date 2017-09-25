@@ -96,17 +96,31 @@ class Game < ApplicationRecord
     #   store the type of hint (either suite or rank) by setting it true
 
     # TODO: for the chosen hint, identify list of all cards that are affected
-    hintCards = []
 
-    hand = @players[player].hand
-    hand.each do |card|
-      if card.suite == hint
-        card.knowsSuite = true
+    # TODO: do this better
+    # values for A-E are 6-10
+
+    if hint == 6
+      hint = 'A'
+    elsif hint == 7
+      hint = 'B'
+    elsif hint == 8
+      hint = 'C'
+    elsif hint == 9
+      hint = 'D'
+    elsif hint == 10
+      hint = 'E'
+    end
+
+    @hands[player.to_i].each do |card|
+      if card[0].to_s == hint
+        card[2] = true
       end
-      if card.rank == hint
-        card.knowsRank = true
+      if card[1].to_s == hint
+        card[3] = true
       end
     end
+
   end
 
   def self.discardCard()
@@ -142,7 +156,7 @@ class Game < ApplicationRecord
         card = Card.new(turnVal[0], turnVal[1]) #rank, suite
         self.playCard(player, card)
       when "hint"
-        puts "hints not implemented yet"
+        self.giveHint(turnVal[0], turnVal[1])
       when "discard"
         puts "discarding not implemented yet"
         card = Card.new(turnVal[0], turnVal[1]) #rank, suite
