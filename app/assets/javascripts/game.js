@@ -168,6 +168,15 @@ var Game = function(element, playerId) {
   	}
   }
 
+  this.showDiscardPile = function(discard_pile) {
+    text = ''
+    for(var i = 0; i < discard_pile.length; i++) {
+      card = discard_pile[i]
+      text += card[0] + card[1] + ', '
+    }
+  	$('#discard-pile').html('['+text+']')
+  }
+
   this.turnFinished = function() {
     // Later, do more with this turn
     this.turn = (this.turn + 1) % 2 //TODO(olivia): Later come back and don't hard code # players
@@ -183,6 +192,7 @@ var Game = function(element, playerId) {
     this.showBombCounter(data)
     this.showCards(data.hands)
     this.showCenterDeck(data.center_deck)
+    this.showDiscardPile(data.discard_pile)
   }
 
   this.updatedState = function(data) {

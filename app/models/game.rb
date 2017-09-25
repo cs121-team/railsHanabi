@@ -155,15 +155,13 @@ class Game < ApplicationRecord
 
   end
 
-  def self.discardCard()
-    # let the user choose a card to discard
-
-    # remove the card from their hand
-
-    # draw a new card for them
-
-    # increase the hint counter
-    hint_counter += 1
+  def self.discardCard(playerId, cardIndex)
+    hand = @hands[playerId]
+    card = hand[cardIndex]
+    self.removePlayersCard(playerId, card)
+    @discard_pile << card
+    @hint_counter += 1 # limit to max
+    self.sendGameState("updated_state")
   end
 
   def self.gameOver()
@@ -197,8 +195,7 @@ class Game < ApplicationRecord
       when "discard"
         puts "TURN VAL"
         puts turnVal
-        puts "discarding not implemented yet"
-        card = Card.new(turnVal[0], turnVal[1]) #rank, suite
+        self.discardCard(playerId, turnVal)
       else
         puts "THIS IS SOME WEIRD INVALID THING"
       #self.messageAll({action: "turn_finished", msg: true});
@@ -211,7 +208,8 @@ class Game < ApplicationRecord
       hands: @hands,
       hint_counter: @hint_counter,
       bomb_counter: @bomb_counter,
-      center_deck: @center_deck
+      center_deck: @center_deck,
+      discard_pile: @discard_pile
     }})
 
   end
