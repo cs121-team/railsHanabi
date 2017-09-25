@@ -64,13 +64,14 @@ It took a long time to figure out how to integrate ActionCable and Redis into ou
 [[LATER]].
 
 ## Unimplemented Features
-We would like to implement several more features
+We would like to implement several more features which are currently unimplemented due to time constraints.
 0. Add a more compelling UI. Designate the suits of different cards by different colors.
 1. Let users mark down additional info they know about their cards which they can infer from their hints (e.g. if they get a hint telling them which cards in their hand are blue, they also know which ones are NOT blue).
 2. Let users log in and save games in a database so they can access stats on their high scores.
 3. Allow multiple games to go on at once.
 4. Don't pass any hidden information to the client (for instance, make it impossible for a user to look up their own cards).
 5. When a game ends, tell the players how well they did and give them the option to start a new game.
+6. Indicate more visually when a user performs an action (e.g. triggering a bomb).
 
 
 ## How to Run It
