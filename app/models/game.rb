@@ -17,14 +17,15 @@ class Game < ApplicationRecord
   def self.setup(user_names=%w[ Gavin Jasmine Nupur Olivia ])
     puts "INITIALIZING GAME!"
     @user_names = user_names
-    @center_deck = [nil, nil, nil, nil, nil]
+    @center_deck = [0, 0, 0, 0, 0]
+    @discard_pile = []
     @remaining_deck = []
     @players = []
     @hint_counter = 8
     @bomb_counter = 3
 
     suites = %w[ A B C D E ]
-    ranks = %i[ 1 1 1 2 2 3 3 4 4 5 ]
+    ranks = [1, 1, 1, 2, 2, 3, 3, 4, 4, 5]
     suites.each do |suite|
       ranks.each do |rank|
         @remaining_deck << [rank, suite, false, false] #Card.new(rank, suite)
@@ -39,8 +40,7 @@ class Game < ApplicationRecord
 
   def self.distributeCards()
     hands = self.getHands()
-    self.messageAll({action: "distribute_cards", msg: @hands}) # TODO: Don't send people their own cards
-    self.messageAll({action: "hint_counter", msg: @hint_counter})
+    self.sendGameState("distribute_cards")
   end
 
   def self.getHands()
@@ -78,7 +78,7 @@ class Game < ApplicationRecord
       @bomb_counter -= 1
     end
     self.removePlayersCard(playerId, card)
-    self.sendGameState()
+    self.sendGameState("updated_state")
   end
 
   def self.removePlayersCard(playerId, card)
@@ -107,14 +107,13 @@ class Game < ApplicationRecord
   def self.playable(card)
     puts "CHECK PLAYABLE"
     rank = card[0]
-    puts rank
+    puts "rank: "+rank.to_s
     suit = self.getSuitId(card[1])
-    puts card
+    puts "card: "+card.to_s
     topCard = @center_deck[suit]
-    if topCard.nil? # No top card
-      return rank == 1
-    end
-    return rank = topCard + 1
+    puts "top card: "+topCard.to_s
+    puts "works: "+(rank == (topCard + 1)).to_s
+    return rank == (topCard + 1)
   end
 
   def self.addToCenterStack(card)
@@ -192,8 +191,12 @@ class Game < ApplicationRecord
         #card = Card.new(turnVal[0], turnVal[1]) #rank, suite
         self.playCard(playerId, turnVal)
       when "hint"
+        puts "TURN VAL"
+        puts turnVal
         self.giveHint(turnVal[0], turnVal[1])
       when "discard"
+        puts "TURN VAL"
+        puts turnVal
         puts "discarding not implemented yet"
         card = Card.new(turnVal[0], turnVal[1]) #rank, suite
       else
@@ -203,11 +206,12 @@ class Game < ApplicationRecord
     end
   end
 
-  def self.sendGameState()
-    self.messageAll({action: "updated_state", msg: {
+  def self.sendGameState(action)
+    self.messageAll({action: action, msg: {
       hands: @hands,
       hint_counter: @hint_counter,
-      bomb_counter: @bomb_counter
+      bomb_counter: @bomb_counter,
+      center_deck: @center_deck
     }})
 
   end

@@ -27,8 +27,8 @@
   <h3>Bomb Counter</h3>
   <div id="bomb-counter">3</div>
 
-  <hr>
   <div id="your-turn" style="display: none;">
+    <hr>
     <div id="play-options" >
       <input id = "play" type="radio" name="turn-type" value="play">Play a Card<br>
       <input id = "hint" type="radio" name="turn-type" value="hint">Give a Hint<br>
@@ -36,14 +36,15 @@
     </div>
 
     <div id="hint-players" style="display: none;">
-      <input type="radio" name="hint-reciever" value=0>Player 0<br> <!-- TODO(olivia): Only show players who are playing, and not yourself -->
-      <input type="radio" name="hint-reciever" value=1>Player 1<br>
-      <input type="radio" name="hint-reciever" value=2>Player 2<br>
-      <input type="radio" name="hint-reciever" value=3>Player 3<br>
-      <input type="radio" name="hint-reciever" value=4>Player 4<br>
+      <hr>
+      <div id="hint-0"><input type="radio" name="hint-reciever" value=0>Player 0<br></div>
+      <div id="hint-1"><input type="radio" name="hint-reciever" value=1>Player 1<br></div>
+      <div id="hint-2"><input type="radio" name="hint-reciever" value=2>Player 2<br></div>
+      <div id="hint-3"><input type="radio" name="hint-reciever" value=3>Player 3<br></div>
     </div>
 
     <div id="my-cards" style="display: none;">
+      <hr>
       <input type="radio" name="card-selector" value=0>Card 0<br>
       <input type="radio" name="card-selector" value=1>Card 1<br>
       <input type="radio" name="card-selector" value=2>Card 2<br>
@@ -52,6 +53,7 @@
     </div>
 
     <div id="hint-list" style="display: none;">
+      <hr>
       <input type="radio" name="hint-selector" value=1>1<br>
       <input type="radio" name="hint-selector" value=2>2<br>
       <input type="radio" name="hint-selector" value=3>3<br>
@@ -64,6 +66,7 @@
       <input type="radio" name="hint-selector" value=10>E<br>
     </div>
 
+    <hr>
     <button id="take-turn">Complete Turn</button> <!-- TODO(olivia): Make this ony show up when you've chosen a valid word. -->
   </div>
 </div>

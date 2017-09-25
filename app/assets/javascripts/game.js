@@ -4,6 +4,7 @@ var Game = function(element, playerId) {
   var hintToPlayer;
   var hint;
   $('#player-id').html('You Are Player ' + playerId)
+  $('#hint-'+playerId).hide()
 
   this.init = function() {
     this.turn = 0
@@ -52,7 +53,7 @@ var Game = function(element, playerId) {
       e.preventDefault();
       $('#your-turn').hide()
       if (turnType == "hint") {
-		    App.game.takeTurn(playerId, turnType, [hintToPlayer, hint]);
+		App.game.takeTurn(playerId, turnType, [hintToPlayer, hint]);
       } else {
       	App.game.takeTurn(playerId, turnType, card);
       }
@@ -157,15 +158,14 @@ var Game = function(element, playerId) {
   this.showBombCounter = function(data) {
   	console.log(data.bomb_counter)
   	text = "Bomb counter: "
-  	text += data.hint_counter
+  	text += data.bomb_counter
   	$('#bomb-counter').html(text);
   }
 
   this.showCenterDeck = function(center_deck) {
-  	text = "Center deck: "
-  	text += center_deck
-    $('#center-deck').html(text);
-
+  	for(var i = 0; i < 5; i++) {
+  	  $('#center-card-'+i).html(center_deck[i])
+  	}
   }
 
   this.turnFinished = function() {
@@ -176,34 +176,19 @@ var Game = function(element, playerId) {
     }
   }
 
-  this.updatedState = function(data) {
+  this.showState = function(data) {
     console.log("WE GOT DATA!!!!!!!!!");
     console.log(data);
-    $('#hint-counter').html(data['hint_counter']);
-    $('#bomb-counter').html(data['bomb_counter']);
+    this.showHintCounter(data)
+    this.showBombCounter(data)
+    this.showCards(data.hands)
+    this.showCenterDeck(data.center_deck)
+  }
 
-
-    if(!$('#hint').is(':checked')) {
-      var cards = document.getElementsByName("card-selector");
-      var card = null;
-      for (var i=0; i<cards.length;i++) {
-        if (cards[i].checked) {
-          card = data.hands[playerId][i];
-        };
-      };
-      if ($('#play').is(':checked')) {
-        this.center_deck.push([card[0],card[1]]);
-      };
-      if ($('#discard').is(':checked')) {
-      	data.hint_counter += 1;
-        this.discard_deck.push([card[0],card[1]]);
-      };
-    }
-    else {
-    	data.hint_counter -= 1;
-    }
+  this.updatedState = function(data) {
+    this.showState(data)
+    
     this.turnFinished();
-    this.showCenterDeck(this.center_deck);
   }
 
   this.start();

@@ -11,21 +11,13 @@ App.game = App.cable.subscriptions.create "GameChannel",
         App.gamePlay = new Game('game-container', data.msg)
 
       when "distribute_cards"
-        App.gamePlay.showCards(data.msg)
-        App.gamePlay.showHintCounter(data.msg)
-        App.gamePlay.showBombCounter(data.msg)
+        App.gamePlay.showState(data.msg)
 
       when "new_game"
         App.gamePlay.newGame()
 
-      when "opponent_withdraw"
-        $('#status').html("Opponent withdraw, You win!")
-        $('#new-match').removeClass('hidden');
-
       when "updated_state"
         App.gamePlay.updatedState(data.msg)
-        App.gamePlay.showHintCounter(data.msg)
-        App.gamePlay.showBombCounter(data.msg)
 
   setup: (cards) ->
     @perform("setup")
