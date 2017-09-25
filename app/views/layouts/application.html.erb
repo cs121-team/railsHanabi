@@ -23,14 +23,14 @@
 	            <!-- Collect the nav links, forms, and other content for toggling -->
 	            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	                <ul class="nav navbar-nav navbar-left">
-                    <%- if current_user %>
+                    <!--<%- if current_user %>
                       <li>
                         <%= link_to "New Game", games_new_path %>
                       </li>
-                    <% end %>
+                    <% end %>-->
                   </ul>
 	                <ul class="nav navbar-nav navbar-right">
-                    <%- if current_user %>
+                    <!--<%- if current_user %>
                       <li>
                         <%= link_to "Log out", destroy_user_session_path, method: :delete, data: {confirm: "Are you sure?"} %>
                       </li>
@@ -41,7 +41,7 @@
                       <li>
                         <%= link_to "Sign up", new_user_registration_path %>
                       </li>
-                    <% end %>
+                    <% end %>-->
 	                </ul>
 	            </div>
 	            <!-- /.navbar-collapse -->
