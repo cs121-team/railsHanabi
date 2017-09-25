@@ -2,7 +2,10 @@
 <p>Find people to play with...</p>
 <div id="status"></div>
 <div id="game-container"></div>
+<div id="hint-counter"></div>
+<div id="bomb-counter"></div>
 <div id="card1"></div>
+<div id="center-deck"></div>
 <div id="your-turn" style="display: none;">
   <div id="play-options" >
     <input id = "play" type="radio" name="turn-type" value="play">Play a Card<br>
@@ -42,8 +45,3 @@
   <button id="take-turn">Complete Turn</button> <!-- TODO(olivia): Make this ony show up when you've chosen a valid word. -->
 
 </div>
-<!-- But we only want logged in users...? -->
-<% @users = User.all %>
-<% @users.each do |user| %>
-  <%= user.email %><br/>
-<% end %>

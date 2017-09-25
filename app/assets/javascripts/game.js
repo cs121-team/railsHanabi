@@ -57,13 +57,8 @@ var Game = function(element, playerId) {
       e.preventDefault();
       $('#your-turn').hide()
       if (turnType == "hint") {
-      	console.log(turnType);
-      	console.log(hintToPlayer);
-      	console.log(hint);
 		App.game.takeTurn(playerId, turnType, [hintToPlayer, hint]);
       } else {
-      	console.log(turnType);
-      	console.log(card);
       	App.game.takeTurn(playerId, turnType, card);
       }
     });
@@ -113,16 +108,51 @@ var Game = function(element, playerId) {
 
   this.showCards = function(cards) {
     var handArr = []
+    console.log(cards)
     for (var hand of cards) {
       var cardStr = "["
       for (var card of hand) {
-        cardStr += card[0] + card[1] + ", "
+
+      	console.log(card[2].toString());
+      	console.log(card[3].toString());
+
+      	if (card[2] == "true") {
+      		console.log("here");
+      		cardStr += card[0] + "*" + card[1] + ", "
+      	}
+      	else if (card[3] == "true") {
+      		console.log("pls");
+      		cardStr += card[0] + card[1]  + "*, "
+      	}
+      	else {
+        	cardStr += card[0] + card[1] + ", "
+        }
       }
       cardStr += "], "
       handArr += cardStr
     }
 
     $('#card1').html(handArr);
+  }
+
+  this.showHintCounter = function(data) {
+  	console.log(data.hint_counter)
+  	text = "Hint counter: "
+  	text += data.hint_counter
+  	$('#hint-counter').html(text);
+  }
+
+  this.showBombCounter = function(data) {
+  	console.log(data.bomb_counter)
+  	text = "Bomb counter: "
+  	text += data.hint_counter
+  	$('#bomb-counter').html(text);
+  }
+
+  this.showCenterDeck = function(center_deck) {
+  	text = "Center deck: "
+  	text += center_deck
+    $('#center-deck').html(text);
   }
 
   this.turnFinished = function() {
@@ -151,12 +181,17 @@ var Game = function(element, playerId) {
         console.log(this.center_deck.length);
       };
       if ($('#discard').is(':checked')) {
+      	data.hint_counter += 1;
         console.log(this.discard_deck.length);
         this.discard_deck.push([card[0],card[1]]);
         console.log(this.discard_deck.length);
       };
-    };
+    }
+    else {
+    	data.hint_counter -= 1;
+    }
     this.turnFinished();
+    this.showCenterDeck(this.center_deck);
   }
 
   this.start();
