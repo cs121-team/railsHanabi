@@ -1,7 +1,7 @@
 App.game = App.cable.subscriptions.create "GameChannel",
   connected: ->
     # Called when the subscription is ready for use on the server
-    $('#status').html("Waiting for an other player")
+    $('#status').html("Waiting for other players.")
 
   received: (data) ->
     # Called when there's incoming data on the websocket for this channel
@@ -19,12 +19,14 @@ App.game = App.cable.subscriptions.create "GameChannel",
       when "updated_state"
         App.gamePlay.updatedState(data.msg)
 
+      when "game_over"
+        App.gamePlay.gameOver()
+
   setup: (cards) ->
     @perform("setup")
 
   takeTurn: (playerId, turnType, turnVal) ->
     @perform "takeTurn", message: {playerId: playerId, turnType: turnType, turnVal: turnVal}
-    #@perform "takeTurn", message: [playerId, turnType, turnVal]
 
   disconnected: ->
     # Called when the subscription has been terminated by the server

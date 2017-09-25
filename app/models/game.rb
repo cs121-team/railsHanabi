@@ -2,25 +2,23 @@
 # a = SecureRandom.uuid
 
 class Game < ApplicationRecord
-  attr_accessor :center_deck, :remaining_deck, :players,
-                :hint_counter, :bomb_counter
-  def self.start(player1, player2, player3="player3uid", player4="player4uid")
-    @playerIds = [player1, player2].shuffle #TODO: Later modify to work with variable # players
-    player0 = @playerIds[0]
-    player1 = @playerIds[1]
+  attr_accessor :center_deck, :remaining_deck, :hint_counter, :bomb_counter
+  def self.start(player0, player1, player2, player3)
+    @playerIds = [player0, player1, player2, player3].shuffle #TODO: Later modify to work with variable # players
 
     # Broadcast back to the players subscribed to the channel that the game has started
-    ActionCable.server.broadcast "player_#{player0}", {action: "game_start", msg: 0}
-    ActionCable.server.broadcast "player_#{player1}", {action: "game_start", msg: 1}
+    ActionCable.server.broadcast "player_#{@playerIds[0]}", {action: "game_start", msg: 0}
+    ActionCable.server.broadcast "player_#{@playerIds[1]}", {action: "game_start", msg: 1}
+    ActionCable.server.broadcast "player_#{@playerIds[2]}", {action: "game_start", msg: 2}
+    ActionCable.server.broadcast "player_#{@playerIds[3]}", {action: "game_start", msg: 3}
+    ActionCable.server.broadcast "player_#{@playerIds[4]}", {action: "game_start", msg: 4}
   end
 
   def self.setup(user_names=%w[ Gavin Jasmine Nupur Olivia ])
-    puts "INITIALIZING GAME!"
     @user_names = user_names
     @center_deck = [0, 0, 0, 0, 0]
     @discard_pile = []
     @remaining_deck = []
-    @players = []
     @hint_counter = 8
     @bomb_counter = 3
 
@@ -28,12 +26,8 @@ class Game < ApplicationRecord
     ranks = [1, 1, 1, 2, 2, 3, 3, 4, 4, 5]
     suites.each do |suite|
       ranks.each do |rank|
-        @remaining_deck << [rank, suite, false, false] #Card.new(rank, suite)
+        @remaining_deck << [rank, suite, false, false] # rank, suit, knowsRank, knowsSuit
       end
-    end
-    @user_names.each do |user_name|
-      hand = Hand.new([])
-      @players << Player.new(user_name, hand)
     end
     self.distributeCards()
   end
@@ -51,7 +45,6 @@ class Game < ApplicationRecord
       while x < 5
         index = rand(@remaining_deck.length)
         hand.push(@remaining_deck[index])
-        #player.hand.addCard(@remaining_deck[index])
         @remaining_deck.delete_at(index)
         x += 1
       end
@@ -71,18 +64,18 @@ class Game < ApplicationRecord
     hand = @hands[playerId]
     card = hand[cardIndex]
     if (self.playable(card))
-      puts "YES"
       self.addToCenterStack(card)
     else
-      puts "NO"
       @bomb_counter -= 1
+      if @bomb_counter == 0
+        self.messageAll({action: "game_over"})
+      end
     end
     self.removePlayersCard(playerId, card)
     self.sendGameState("updated_state")
   end
 
   def self.removePlayersCard(playerId, card)
-    puts "REMOVING PLAYER CARD"
     hand = @hands[playerId]
     for i in 0..4
       currentCard = hand[i]
@@ -93,6 +86,9 @@ class Game < ApplicationRecord
   end
 
   def self.getNewCard()
+    if @remaining_deck.length == 0
+      self.messageAll({action: "game_over"})
+    end
     index = rand(@remaining_deck.length)
     newCard = @remaining_deck[index]
     @remaining_deck.delete_at(index)
@@ -100,24 +96,17 @@ class Game < ApplicationRecord
   end
 
   def self.getSuitId(suit)
-    puts "getting suit id"
     return ['A','B','C','D','E'].index(suit);
   end
 
   def self.playable(card)
-    puts "CHECK PLAYABLE"
     rank = card[0]
-    puts "rank: "+rank.to_s
     suit = self.getSuitId(card[1])
-    puts "card: "+card.to_s
     topCard = @center_deck[suit]
-    puts "top card: "+topCard.to_s
-    puts "works: "+(rank == (topCard + 1)).to_s
     return rank == (topCard + 1)
   end
 
   def self.addToCenterStack(card)
-    puts "ADDING TO CENTER"
     suit = self.getSuitId(card[1])
     @center_deck[suit] = card[0]
   end
@@ -126,23 +115,6 @@ class Game < ApplicationRecord
     # provide options that person could choose from
     #   list of players, and either rank or suite that they could pick from
     #   store the type of hint (either suite or rank) by setting it true
-
-    # TODO: for the chosen hint, identify list of all cards that are affected
-
-    # TODO: do this better
-    # values for A-E are 6-10
-
-    if hint == 6
-      hint = 'A'
-    elsif hint == 7
-      hint = 'B'
-    elsif hint == 8
-      hint = 'C'
-    elsif hint == 9
-      hint = 'D'
-    elsif hint == 10
-      hint = 'E'
-    end
 
     @hands[player.to_i].each do |card|
       if card[0].to_s == hint
@@ -178,30 +150,18 @@ class Game < ApplicationRecord
   def self.takeTurn(data)
     message = data['message']
     turnVal = message["turnVal"]
-    puts ">>>>>>>>>> TAKING TURN <<<<<<<<<<<<"
-    puts message
-    puts message["playerId"]
     playerId = message["playerId"]
-    player = @players[playerId] # TODO(olivia): figure out how message works
 
     if !self.gameOver()
       case message["turnType"]
       when "play"
-        puts "TURN VAL"
-        puts turnVal
-        #card = Card.new(turnVal[0], turnVal[1]) #rank, suite
         self.playCard(playerId, turnVal)
       when "hint"
-        puts "TURN VAL"
-        puts turnVal
         self.giveHint(turnVal[0], turnVal[1])
       when "discard"
-        puts "TURN VAL"
-        puts turnVal
         self.discardCard(playerId, turnVal)
       else
-        puts "THIS IS SOME WEIRD INVALID THING"
-      #self.messageAll({action: "turn_finished", msg: true});
+        puts "THIS IS SOME WEIRD INVALID INPUT"
       end
     end
   end
@@ -214,76 +174,5 @@ class Game < ApplicationRecord
       center_deck: @center_deck,
       discard_pile: @discard_pile
     }})
-
-  end
-
-end
-
-
-class Card
-  attr_accessor :rank, :suite, :knowsRank, :knowsSuite
-  def initialize(rank, suite)
-    @rank = rank
-    @suite = suite
-    @knowsRank = false
-    @knowsSuite = false
-  end
-
-  def knowsRank()
-    @knowsRank = true
-  end
-
-  def knowsSuite()
-    @knowsSuite = true
-  end
-
-  def to_s
-    card_string = "#{@rank}#{@suite}"
-
-    if @knowsRank
-      card_string << "#{@rank}"
-    end
-
-    if @knowsSuite
-      card_string << "#{@suite}"
-    end
-
-    card_string #returned
-  end
-end
-
-class Hand
-  attr_accessor :cards
-  def initialize(cards)
-    @cards = cards
-  end
-
-  def addCard(card)
-    @cards << card
-  end
-
-  def removeCard(card)
-    @cards.delete_if {|c| c == card}
-  end
-
-  def to_s
-    cards_string = ""
-    for card in @cards
-      cards_string << "\t #{card} \n"
-    end
-    cards_string
-  end
-end
-
-class Player
-  attr_accessor :user_name, :hand
-  def initialize(user_name, hand)
-    @user_name = user_name
-    @hand = hand
-  end
-
-  def to_s
-    "Username: #{@user_name} \n" +
-    "Cards: \n #{@hand}"
   end
 end

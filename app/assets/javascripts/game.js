@@ -25,6 +25,7 @@ var Game = function(element, playerId) {
         this.remaining_deck.push([this.ranks[i],this.suites[j]]);
       }
     }
+    $('#status').html("")
     if (playerId == 0) {
       this.distributeCards(); //TODO(olivia): Make this something that naturally gets called during game start
       $('#your-turn').show();
@@ -53,7 +54,7 @@ var Game = function(element, playerId) {
       e.preventDefault();
       $('#your-turn').hide()
       if (turnType == "hint") {
-		App.game.takeTurn(playerId, turnType, [hintToPlayer, hint]);
+		    App.game.takeTurn(playerId, turnType, [hintToPlayer, hint]);
       } else {
       	App.game.takeTurn(playerId, turnType, card);
       }
@@ -74,7 +75,6 @@ var Game = function(element, playerId) {
         case "discard":
           $('#my-cards').show();
           this.play_card = true;
-          console.log("play");
           $('#hint-players').hide();
           break;
         default:
@@ -88,7 +88,6 @@ var Game = function(element, playerId) {
 
     $("#hint-players input:radio").click(function(e) {
       hintToPlayer = e.target.value;
-      console.log('trying to show hints?');
       $('#hint-list').show();
     });
 
@@ -103,18 +102,24 @@ var Game = function(element, playerId) {
   };
 
   this.showCards = function(cards) {
-    var handArr = []
+    var handArr = [];
     for (var i = 0; i < cards.length; i++) {
       if (i == playerId) {
         var hand = cards[i];
         for (var j = 0; j < hand.length; j++) {
           var card = hand[j];
+          var cardString = ""
           if (card[2]) {
-            $('#my-card-' + j).html(card[0] + ' ');
+            cardString += card[0];
           }
           if (card[3]) {
-            $('#my-card-' + j).html($('#my-card-' + j).html() + card[1] + ' ');
+            cardString += card[1];
           }
+          if(cardString == "") {
+            cardString = "[]"
+          }
+          cardString += ', ';
+          $('#my-card-' + j).html(cardString);
         }
       } else {
         var hand = cards[i];
@@ -137,26 +142,13 @@ var Game = function(element, playerId) {
     $('#card1').html(handArr);
   }
 
-
-  // this.showCenterPile = function(cards) {
-  //   for (var i = 0; i < cards.length; i++) {
-  //     var card = cards[i];
-  //     if (card[0] != null) {
-  //       $('#center-card-' + i).html('[' + card[0] + card[1] + ']');
-  //     } else {
-  //       $('#center-card-' + i).html('[empty]');
-  //     }
-  //   }
-
   this.showHintCounter = function(data) {
-  	console.log(data.hint_counter)
   	text = "Hint counter: "
   	text += data.hint_counter
   	$('#hint-counter').html(text);
   }
 
   this.showBombCounter = function(data) {
-  	console.log(data.bomb_counter)
   	text = "Bomb counter: "
   	text += data.bomb_counter
   	$('#bomb-counter').html(text);
@@ -179,15 +171,17 @@ var Game = function(element, playerId) {
 
   this.turnFinished = function() {
     // Later, do more with this turn
-    this.turn = (this.turn + 1) % 2 //TODO(olivia): Later come back and don't hard code # players
+    this.turn = (this.turn + 1) % 4
     if (this.turn == playerId) {
       $('#your-turn').show();
     }
   }
 
+  this.gameOver = function() {
+    $('#title').html("Game Over!")
+  }
+
   this.showState = function(data) {
-    console.log("WE GOT DATA!!!!!!!!!");
-    console.log(data);
     this.showHintCounter(data)
     this.showBombCounter(data)
     this.showCards(data.hands)
