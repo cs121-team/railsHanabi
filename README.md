@@ -21,14 +21,32 @@ Our MVP allows users to do the following features:
 
 ## Functionality
 
-[[DO THIS]]
+This game lets you perform all the actions you would want to do in a real Hanabi game.
+
+Let's walk through the game flow.
+
+0. When you first arrive to the page, you'll be asked to wait for other players to arrive.
+[[Screenshot.]]
+1. As soon as enough players (4) are present, the game automatically starts.
+2. When the game has started, you can see all other players' cards except your own.
+3. The player whose turn it is has three options: play a card, give a hint, or discard a card.
+[[Screenshot]]
+  1. To play a card, select which of your cards you want to play. You may have some information about some of them.
+  [[Screenshot]].
+  2. To give a hint, select which other player you would like to give a hint to, then choose which hint you would like to give (e.g. tell them all cards of a certain rank). This also decreases your hint counter by 1.
+  [[Screenshot]].
+  3. To discard a card, select which of your cards you want to discard. This also increases the hint counter.
+  [[Screenshot]]
+  4. When all the bombs have been exploded or you run out of cards, the game ends.
+  [[Screenshot]]
+
 
 ## Architecture
 
-The app was built using Ruby on Rails. Specifically, the project uses Ruby version XXX and Rails XXX. We also used Redis with ActionCable to allow for real-time updates from the server. [[EXPLAIN WHAT REDIS IS]]
-
 ### Main Technologies
-[[DO THIS]]
+The app was built using Ruby on Rails. Specifically, the project uses Ruby version 2.4.1p Rails 5.1.4. 
+
+We also used Redis with ActionCable to allow for real-time updates from the server.
 
 ### Important components (separated by file)
 * new.html.erb - This file contains all of the HTML for our single-page application.
