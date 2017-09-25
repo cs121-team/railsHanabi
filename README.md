@@ -62,7 +62,9 @@ We also used Redis with ActionCable to allow for real-time updates from the serv
 It took a long time to figure out how to integrate ActionCable and Redis into our app. The Tic-Tac-Toe tutorial mentioned in the references was the resource which helped us most in debugging this, followed by the "Action Cable Demo" file.
 
 ### Known Bugs
-Reloading the page makes the game think you're a new player. This is because we don't require any login, so there's no easy way to tell whether you opened the app in a new tab or reloaded the page. 
+0. Reloading the page makes the game think you're a new player. This is because we don't require any login, so there's no easy way to tell whether you opened the app in a new tab or reloaded the page. 
+1. You trigger an error if you try to play before first selecting a card or a player to give a hint to. With a bit more time, this could be fixed by disabling the "Make Move" button until the required selections have been made.
+2. Sometimes, when you reload multiple tabs to represent different users, the game will restart before all of hte users' pages have been realoaded. This may be due to the fact that old tabs still are maintaining a connection to our GameChannel. This could be debugged by testing which situations the error occurs and by printing out how many connections there are to the GameChannel at any given time.
 
 ## Unimplemented Features
 We would like to implement several more features which are currently unimplemented due to time constraints.
@@ -74,6 +76,8 @@ We would like to implement several more features which are currently unimplement
 4. Don't pass any hidden information to the client (for instance, make it impossible for a user to look up their own cards).
 5. When a game ends, tell the players how well they did and give them the option to start a new game.
 6. Indicate more visually when a user performs an action (e.g. triggering a bomb).
+7. Better error handling.
+8. Allow for variable numbers of players per game.
 
 
 ## How to Run It
