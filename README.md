@@ -75,7 +75,7 @@ We would like to implement several more features
 
 ## How to Run It
 0. Install Ruby and Rails
-1. Install redis. (INSERT LINK)
+1. [Install redis.](https://redis.io/download)
 2. Clone this repository.
 3. Cd into the project directory, then run "bundle install"
 3. Open a terminal window. Cd into the project directory, and run "redis-server".
