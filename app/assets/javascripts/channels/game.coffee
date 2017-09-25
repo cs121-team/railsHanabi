@@ -12,6 +12,8 @@ App.game = App.cable.subscriptions.create "GameChannel",
 
       when "distribute_cards"
         App.gamePlay.showCards(data.msg)
+        App.gamePlay.showHintCounter(data.msg)
+        App.gamePlay.showBombCounter(data.msg)
 
       when "new_game"
         App.gamePlay.newGame()
@@ -22,6 +24,8 @@ App.game = App.cable.subscriptions.create "GameChannel",
 
       when "updated_state"
         App.gamePlay.updatedState(data.msg)
+        App.gamePlay.showHintCounter(data.msg)
+        App.gamePlay.showBombCounter(data.msg)
 
   setup: (cards) ->
     @perform("setup")

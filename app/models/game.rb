@@ -40,6 +40,7 @@ class Game < ApplicationRecord
   def self.distributeCards()
     hands = self.getHands()
     self.messageAll({action: "distribute_cards", msg: @hands}) # TODO: Don't send people their own cards
+    self.messageAll({action: "hint_counter", msg: @hint_counter})
   end
 
   def self.getHands()
@@ -168,8 +169,9 @@ class Game < ApplicationRecord
 
   def self.gameOver()
     over = false
-    @bomb_counter == 0
+    if @bomb_counter == 0
       over = true
+    end
     over #returned
   end
 
@@ -182,8 +184,7 @@ class Game < ApplicationRecord
     playerId = message["playerId"]
     player = @players[playerId] # TODO(olivia): figure out how message works
 
-    #gameOver = !self.gameOver()
-    if true
+    if !self.gameOver()
       case message["turnType"]
       when "play"
         puts "TURN VAL"

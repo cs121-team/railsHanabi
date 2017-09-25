@@ -136,15 +136,36 @@ var Game = function(element, playerId) {
     $('#card1').html(handArr);
   }
 
-  this.showCenterPile = function(cards) {
-    for (var i = 0; i < cards.length; i++) {
-      var card = cards[i];
-      if (card[0] != null) {
-        $('#center-card-' + i).html('[' + card[0] + card[1] + ']');
-      } else {
-        $('#center-card-' + i).html('[empty]');
-      }
-    }
+
+  // this.showCenterPile = function(cards) {
+  //   for (var i = 0; i < cards.length; i++) {
+  //     var card = cards[i];
+  //     if (card[0] != null) {
+  //       $('#center-card-' + i).html('[' + card[0] + card[1] + ']');
+  //     } else {
+  //       $('#center-card-' + i).html('[empty]');
+  //     }
+  //   }
+
+  this.showHintCounter = function(data) {
+  	console.log(data.hint_counter)
+  	text = "Hint counter: "
+  	text += data.hint_counter
+  	$('#hint-counter').html(text);
+  }
+
+  this.showBombCounter = function(data) {
+  	console.log(data.bomb_counter)
+  	text = "Bomb counter: "
+  	text += data.hint_counter
+  	$('#bomb-counter').html(text);
+  }
+
+  this.showCenterDeck = function(center_deck) {
+  	text = "Center deck: "
+  	text += center_deck
+    $('#center-deck').html(text);
+
   }
 
   this.turnFinished = function() {
@@ -174,10 +195,15 @@ var Game = function(element, playerId) {
         this.center_deck.push([card[0],card[1]]);
       };
       if ($('#discard').is(':checked')) {
+      	data.hint_counter += 1;
         this.discard_deck.push([card[0],card[1]]);
       };
-    };
+    }
+    else {
+    	data.hint_counter -= 1;
+    }
     this.turnFinished();
+    this.showCenterDeck(this.center_deck);
   }
 
   this.start();
