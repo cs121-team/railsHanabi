@@ -67,14 +67,8 @@ class Game < ApplicationRecord
 
 
   def self.playCard(playerId, cardIndex)
-    puts "PLAYING CARD"
-    puts playerId, cardIndex, cardIndex.class
-    puts '>>>>>>>>>', @hands[playerId], '<<<<<<<<<<<<<'
-    #puts @hands[playerId][cardIndex]
     hand = @hands[playerId]
     card = hand[cardIndex]
-    puts "GOT OUR CARD"
-    puts card
     if (self.playable(card))
       puts "YES"
       self.addToCenterStack(card)
