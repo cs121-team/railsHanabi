@@ -152,7 +152,10 @@ class Game < ApplicationRecord
         card[3] = true
       end
     end
-
+    
+    @hint_counter -= 1
+    
+    self.sendGameState("updated_state")
   end
 
   def self.discardCard(playerId, cardIndex)
@@ -160,7 +163,7 @@ class Game < ApplicationRecord
     card = hand[cardIndex]
     self.removePlayersCard(playerId, card)
     @discard_pile << card
-    @hint_counter += 1 # limit to max
+    @hint_counter += 1 # TODO: limit to max
     self.sendGameState("updated_state")
   end
 
