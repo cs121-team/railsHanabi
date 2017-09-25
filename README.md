@@ -27,19 +27,17 @@ This game lets you perform all the actions you would want to do in a real Hanabi
 Let's walk through the game flow.
 
 0. When you first arrive to the page, you'll be asked to wait for other players to arrive.
-[[Screenshot.]]
+![waiting for players](https://user-images.githubusercontent.com/12390123/30809789-db13fad8-a1b7-11e7-96d8-c33685693a6c.png)
 1. As soon as enough players (4) are present, the game automatically starts.
 2. When the game has started, you can see all other players' cards except your own.
+![new game](https://user-images.githubusercontent.com/12390123/30809787-db03802c-a1b7-11e7-8b57-c55806f36a3f.png)
 3. The player whose turn it is has three options: play a card, give a hint, or discard a card.
-[[Screenshot]]
+![three play options](https://user-images.githubusercontent.com/12390123/30809788-db11150c-a1b7-11e7-81cc-ce100fe35811.png)
   1. To play a card, select which of your cards you want to play. You may have some information about some of them.
-  [[Screenshot]].
   2. To give a hint, select which other player you would like to give a hint to, then choose which hint you would like to give (e.g. tell them all cards of a certain rank). This also decreases the hint counter by 1.
-  [[Screenshot]].
   3. To discard a card, select which of your cards you want to discard. This also increases the hint counter.
-  [[Screenshot]]
   4. When all the bombs have been exploded or you run out of cards, the game ends.
-  [[Screenshot]]
+  ![game over](https://user-images.githubusercontent.com/12390123/30809783-dae90184-a1b7-11e7-911d-29ee6b45ddd6.png)
 
 
 ## Architecture
@@ -63,7 +61,7 @@ It took a long time to figure out how to integrate ActionCable and Redis into ou
 
 ### Known Bugs
 0. Reloading the page makes the game think you're a new player. This is because we don't require any login, so there's no easy way to tell whether you opened the app in a new tab or reloaded the page. 
-1. You trigger an error if you try to play before first selecting a card or a player to give a hint to. With a bit more time, this could be fixed by disabling the "Make Move" button until the required selections have been made.
+1. You trigger an error if you try to play before first selecting a card or a player to give a hint to. With a bit more time, this could be fixed by disabling the "Complete Move" button until the required selections have been made.
 2. Sometimes, when you reload multiple tabs to represent different users, the game will restart before all of hte users' pages have been realoaded. This may be due to the fact that old tabs still are maintaining a connection to our GameChannel. This could be debugged by testing which situations the error occurs and by printing out how many connections there are to the GameChannel at any given time.
 
 ## Unimplemented Features
