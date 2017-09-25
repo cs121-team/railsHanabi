@@ -2,7 +2,7 @@
 
 ## Summary
 
-This app implements the card game Hanabi. Hanabi, which is typically played in-person, is a cooperative game in which players hold their cards outwards so that they can see other players' cards but not their own. Other players are allowed to give each other limited numbers of hints to help each player play correctly. Full rules for Hanabi can be found [here.](http://www.spillehulen.dk/resources/product/EDR/RG8/69/Hanabi%20Card%20Game%20Rules.pdf)
+This app implements the card game Hanabi. Hanabi, which is typically played in-person, is a cooperative game in which players hold their cards outwards so that they can see other players' cards but not their own. Players are allowed to give each other limited numbers of hints to allow each other to discover the contents of their hands and therefore what plays are valid. Full rules for Hanabi can be found [here.](http://www.spillehulen.dk/resources/product/EDR/RG8/69/Hanabi%20Card%20Game%20Rules.pdf)
 
 You can play our game online at [http://hanabi.yancey.io:3000/](http://hanabi.yancey.io:3000/).
 
@@ -11,6 +11,7 @@ The app was initially created for an assignment in Harvey Mudd's CS 121 class. I
 
 ## MVP
 Our MVP allows users to do the following features:
+
 0. Join a game. Once 4 players have arrived at the site, the game automatically begins.
 1. See the cards in other players' hands and in the center pile.
 2. Play a card when it's your turn. If this card is correct, it will be added to the center stack of cards. If it is incorrect, it will trigger one of the game's bombs. In either situation, a new card will be added to you hand.
@@ -33,7 +34,7 @@ Let's walk through the game flow.
 [[Screenshot]]
   1. To play a card, select which of your cards you want to play. You may have some information about some of them.
   [[Screenshot]].
-  2. To give a hint, select which other player you would like to give a hint to, then choose which hint you would like to give (e.g. tell them all cards of a certain rank). This also decreases your hint counter by 1.
+  2. To give a hint, select which other player you would like to give a hint to, then choose which hint you would like to give (e.g. tell them all cards of a certain rank). This also decreases the hint counter by 1.
   [[Screenshot]].
   3. To discard a card, select which of your cards you want to discard. This also increases the hint counter.
   [[Screenshot]]
@@ -44,16 +45,16 @@ Let's walk through the game flow.
 ## Architecture
 
 ### Main Technologies
-The app was built using Ruby on Rails. Specifically, the project uses Ruby version 2.4.1p Rails 5.1.4. 
+The app was built using Ruby on Rails. Specifically, the project uses Ruby 2.4.1p with Rails 5.1.4. 
 
 We also used Redis with ActionCable to allow for real-time updates from the server.
 
 ### Important components (separated by file)
-* new.html.erb - This file contains all of the HTML for our single-page application.
-* game.js - This file updates the HTML in new.html.erb with changes as other players' actions change the game state. It also listens for user interactions in the HTML and triggers the appropriate responses. When it wants to send an update to the server, it makes calls to functions in game.coffee.
-* game.coffee - This file acts as a switchboard, forwarding functions initiated in game.js to the GameChannel and recieving ActionCable messages sent back from the server. It then uses these messages to call the appropriate functions in game.js.
-* game_channel.rb - This file contains a Redis ApplicationChannel called GameChannel. When users arrive at our site, they are automatically subscribed to a game channel. This class allows all subscribed users to be updated of changes initiated by other users via ActionCable messages. For the most part, functions game_channel.rb simply call corresponding functions in game.rb.
-* game.rb - This class contains most of our game logic. It maintains a global game state, which includes what hands each player is holding, the hint and bomb counters, and the stacks of center and discarded cards.  This class validates whether a user's play is allowed and updates the game state in response to this play. It then sends a message containing the new game state to all users via ActionCable.
+* [new.html.erb](app/views/games/new.html.erb) - This file contains all of the HTML for our single-page application.
+* [game.js](app/assets/javascripts/game.js) - This file updates the HTML in new.html.erb with changes as other players' actions change the game state. It also listens for user interactions in the HTML and triggers the appropriate responses. When it wants to send an update to the server, it makes calls to functions in game.coffee.
+* [game.coffee](app/assets/javascripts/channels/game.coffee) - This file acts as a switchboard, forwarding functions initiated in game.js to the GameChannel and recieving ActionCable messages sent back from the server. It then uses these messages to call the appropriate functions in game.js.
+* [game\_channel.rb](app/channels/game_channel.rb) - This file contains a Redis ApplicationChannel called GameChannel. When users arrive at our site, they are automatically subscribed to a game channel. This class allows all subscribed users to be updated of changes initiated by other users via ActionCable messages. For the most part, functions game\_channel.rb simply call corresponding functions in game.rb.
+* [game.rb](app/models/game.rb) - This class contains most of our game logic. It maintains a global game state, which includes what hands each player is holding, the hint and bomb counters, and the stacks of center and discarded cards.  This class validates whether a user's play is allowed and updates the game state in response to this play. It then sends a message containing the new game state to all users via ActionCable.
 
 ## Issues
 
@@ -61,10 +62,11 @@ We also used Redis with ActionCable to allow for real-time updates from the serv
 It took a long time to figure out how to integrate ActionCable and Redis into our app. The Tic-Tac-Toe tutorial mentioned in the references was the resource which helped us most in debugging this, followed by the "Action Cable Demo" file.
 
 ### Known Bugs
-[[LATER]].
+Reloading the page makes the game think you're a new player. This is because we don't require any login, so there's no easy way to tell whether you opened the app in a new tab or reloaded the page. 
 
 ## Unimplemented Features
 We would like to implement several more features which are currently unimplemented due to time constraints.
+
 0. Add a more compelling UI. Designate the suits of different cards by different colors.
 1. Let users mark down additional info they know about their cards which they can infer from their hints (e.g. if they get a hint telling them which cards in their hand are blue, they also know which ones are NOT blue).
 2. Let users log in and save games in a database so they can access stats on their high scores.
@@ -83,6 +85,8 @@ We would like to implement several more features which are currently unimplement
 4. Open another terminal window. Cd into the project directory, and run "rails s".
 5. Navigate to http://localhost:3000/. The app should be working!
 6. To simulate multiple users, open multiple browser windows.
+
+Alternatively, you can play it at <http://hanabi.yancey.io:3000/>, where we've already done steps 1-6.
 
 ## References
 
